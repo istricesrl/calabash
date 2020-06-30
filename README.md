@@ -6,8 +6,8 @@ just clone or download the repository and merge the usr folder from the reposito
 
 ### installation from web
 
-`apt-get install wget && wget http://calabash.videoarts.it/va.current.tar
-tar -xvf ./va.current.tar --overwrite -C /`
+```apt-get install wget && wget http://calabash.videoarts.it/va.current.tar
+tar -xvf ./va.current.tar --overwrite -C /```
 
 ## script
 

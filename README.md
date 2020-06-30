@@ -4,6 +4,11 @@ this is a simple Bash script collection to make some Debian administration task 
 ## installation
 just clone or download the repository and merge the usr folder from the repository with the usr folder on your Linux box
 
+### installation from web
+
+`apt-get install wget && wget http://calabash.videoarts.it/va.current.tar
+tar -xvf ./va.current.tar --overwrite -C /`
+
 ## script
 
 ### wget script

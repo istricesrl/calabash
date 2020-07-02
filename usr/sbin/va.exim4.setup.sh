@@ -1,23 +1,23 @@
 #!/bin/bash
 
 # installazione servizi
-apt-get install exim4 sasl2-bin swaks
+apt-get install exim4 sasl2-bin swaks libnet-ssleay-perl
 
 # creazione certificato auto firmato
 apt-get install certbot
 certbot certonly --standalone -d $(hostname)
 
 # permessi per i certificati
+adduser Debian-exim sasl
 groupadd privkey_users
 usermod -aG privkey_users Debian-exim
 chmod g+rx /etc/letsencrypt/live/
 chmod g+rx /etc/letsencrypt/archive/
+chmod g+rx /etc/letsencrypt/archive/$(hostname)/
+chmod g+r /etc/letsencrypt/archive/$(hostname)/*.pem
 chown root:privkey_users /etc/letsencrypt/archive/
 chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/
-chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/cert1.pem
-chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/chain1.pem
-chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/privkey1.pem
-chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/fullchain1.pem
+chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/*.pem
 chown root:privkey_users /etc/letsencrypt/live/
 chown root:privkey_users /etc/letsencrypt/live/$(hostname)/
 

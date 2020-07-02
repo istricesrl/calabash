@@ -2,6 +2,7 @@
 
 # installazione servizi
 va.lamp.setup.sh
+va.dovecot.setup.sh
 apt-get install roundcube
 
 # REVISIONI

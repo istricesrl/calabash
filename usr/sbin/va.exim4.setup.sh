@@ -52,7 +52,6 @@ echo "CFILEMODE='644'" >> $FILECONF
 echo "dc_use_split_config='false'" >> $FILECONF
 echo "dc_hide_mailname='true'" >> $FILECONF
 echo "dc_mailname_in_oh='true'" >> $FILECONF
-echo "dc_localdelivery='maildir_home'" >> $FILECONF
 
 # richiesta API key Sendgrid
 echo -n "inserire l'API key di Sendgrid: "
@@ -79,7 +78,7 @@ FILECONF=/etc/exim4/exim4.conf.template
 va.bak.sh $FILECONF
 
 # scrittura del file di configurazione
-cp /usr/share/doc/va.script/examples/etc/exim4/exim4.conf.template.tlssmtpauth $FILECONF
+cp /usr/share/doc/va.script/examples/etc/exim4/exim4.conf.template.vhost $FILECONF
 
 # file di configurazione
 FILECONF=/etc/default/saslauthd

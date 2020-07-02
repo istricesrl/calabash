@@ -1,0 +1,11 @@
+# Virtual mailbox passwords.
+passdb {
+  driver = passwd-file
+  args = username_format=%n /etc/vmail/%d/passwd
+}
+
+# VMail static settings.
+userdb {
+  driver = static
+  args = uid=vmail gid=vmail home=/var/mail/vhosts/%d/%n
+}

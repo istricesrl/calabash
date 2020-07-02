@@ -30,8 +30,8 @@ va.bak.sh $FILECONF
 # scrittura del file di configurazione
 echo "MAIN_TLS_ENABLE = true" > $FILECONF
 echo "AUTH_SERVER_ALLOW_NOTLS_PASSWORDS = true" >> $FILECONF
-echo "MAIN_TLS_CERTIFICATE = /etc/letsencrypt/archive/$(hostname)/fullchain3.pem" >> $FILECONF
-echo "MAIN_TLS_PRIVATEKEY = /etc/letsencrypt/archive/$(hostname)/privkey3.pem" >> $FILECONF
+echo "MAIN_TLS_CERTIFICATE = /etc/letsencrypt/archive/$(hostname)/fullchain1.pem" >> $FILECONF
+echo "MAIN_TLS_PRIVATEKEY = /etc/letsencrypt/archive/$(hostname)/privkey1.pem" >> $FILECONF
 
 # file di configurazione
 FILECONF=/etc/exim4/update-exim4.conf.conf

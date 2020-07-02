@@ -8,18 +8,18 @@ apt-get install certbot
 certbot certonly --standalone -d $(hostname)
 
 # permessi per i certificati
-sudo groupadd privkey_users
-sudo usermod -aG privkey_users Debian-exim
-sudo sudo chmod g+rx /etc/letsencrypt/live/
-sudo sudo chmod g+rx /etc/letsencrypt/archive/
-sudo chown root:privkey_users /etc/letsencrypt/archive/
-sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/
-sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/cert1.pem
-sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/chain1.pem
-sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/privkey1.pem
-sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/fullchain1.pem
-sudo chown root:privkey_users /etc/letsencrypt/live/
-sudo chown root:privkey_users /etc/letsencrypt/live/$(hostname)/
+groupadd privkey_users
+usermod -aG privkey_users Debian-exim
+chmod g+rx /etc/letsencrypt/live/
+chmod g+rx /etc/letsencrypt/archive/
+chown root:privkey_users /etc/letsencrypt/archive/
+chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/
+chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/cert1.pem
+chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/chain1.pem
+chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/privkey1.pem
+chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/fullchain1.pem
+chown root:privkey_users /etc/letsencrypt/live/
+chown root:privkey_users /etc/letsencrypt/live/$(hostname)/
 
 # file di configurazione
 FILECONF=/etc/exim4/exim4.conf.localmacros

@@ -1,11 +1,25 @@
 #!/bin/bash
 
 # installazione servizi
-apt-get install exim4 sasl2-bin
+apt-get install exim4 sasl2-bin swaks
 
 # creazione certificato auto firmato
 apt-get install certbot
 certbot certonly --standalone -d $(hostname)
+
+# permessi per i certificati
+sudo groupadd privkey_users
+sudo usermod -aG privkey_users Debian-exim
+sudo sudo chmod g+rx /etc/letsencrypt/live/
+sudo sudo chmod g+rx /etc/letsencrypt/archive/
+sudo chown root:privkey_users /etc/letsencrypt/archive/
+sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/
+sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/cert1.pem
+sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/chain1.pem
+sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/privkey1.pem
+sudo chown root:privkey_users /etc/letsencrypt/archive/$(hostname)/fullchain1.pem
+sudo chown root:privkey_users /etc/letsencrypt/live/
+sudo chown root:privkey_users /etc/letsencrypt/live/$(hostname)/
 
 # file di configurazione
 FILECONF=/etc/exim4/exim4.conf.localmacros
@@ -38,6 +52,7 @@ echo "CFILEMODE='644'" >> $FILECONF
 echo "dc_use_split_config='false'" >> $FILECONF
 echo "dc_hide_mailname='true'" >> $FILECONF
 echo "dc_mailname_in_oh='true'" >> $FILECONF
+echo "dc_localdelivery='maildir_home'" >> $FILECONF
 
 # richiesta API key Sendgrid
 echo -n "inserire l'API key di Sendgrid: "
@@ -56,6 +71,15 @@ if [ -n "$APIKEY" ]; then
     echo "*:apikey:$APIKEY" > $FILECONF
 
 fi
+
+# file di configurazione
+FILECONF=/etc/exim4/exim4.conf.template
+
+# backup del file di configurazione
+va.bak.sh $FILECONF
+
+# scrittura del file di configurazione
+cp /usr/share/doc/va.script/examples/etc/exim4/exim4.conf.template.tlssmtpauth $FILECONF
 
 # file di configurazione
 FILECONF=/etc/default/saslauthd
@@ -79,6 +103,7 @@ va.mail.send.sh
 
 # NOTA
 # provare anche da https://www.smtper.net/
+# provare swaks -a -tls -q HELO -s mail.istricesrl.it -au test -p 2525 -ap '<>'
 
 # REVISIONI
 # 2020-07-02 controllo funzionamento su Debian 10 (buster)

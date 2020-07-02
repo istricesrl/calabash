@@ -191,3 +191,6 @@ exit $?
 # TO-DO
 # va settata la mail dell'amministratore, ma questo implica il setup della posta,
 # ad ogni modo bisogna che sistemistica@videoarts.eu riceva le notifiche
+
+# REVISIONI
+# 2020-07-02 controllo funzionamento su Debian 10 (buster)

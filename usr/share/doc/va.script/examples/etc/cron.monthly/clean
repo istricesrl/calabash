@@ -1,0 +1,5 @@
+#!/bin/bash
+
+logger "$0"
+
+va.disk.file.old.delete.sh /var/backups 45

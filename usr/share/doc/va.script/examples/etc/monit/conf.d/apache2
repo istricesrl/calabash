@@ -1,0 +1,6 @@
+check process apache2 with pidfile /var/run/apache2/apache2.pid
+  group www
+  start program = "/etc/init.d/apache2 start"
+  stop program = "/etc/init.d/apache2 stop"
+  if failed host 127.0.0.1 port 8080 then restart
+  if cpu > 90% for 5 cycles then restart

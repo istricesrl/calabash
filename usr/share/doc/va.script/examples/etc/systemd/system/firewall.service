@@ -1,0 +1,10 @@
+[Unit]
+Description=Firewall configuration script
+Before=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/va.firewall.service.sh
+
+[Install]
+WantedBy=basic.target

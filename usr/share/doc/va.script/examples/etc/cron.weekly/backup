@@ -1,0 +1,5 @@
+#!/bin/bash
+
+logger "$0"
+
+va.bak.tar.sh /var/www /var/backups/ z quiet

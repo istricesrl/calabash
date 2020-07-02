@@ -1,0 +1,5 @@
+#!/bin/bash
+
+logger "$0"
+
+va.mysql.db.export.all.sh /var/backups z quiet

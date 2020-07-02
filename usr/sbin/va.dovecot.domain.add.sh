@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# se
+# se è specificato un dominio
 if [ -n "$1" ]; then
 
     # aggiunta dominio

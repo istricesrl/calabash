@@ -129,3 +129,6 @@ fi
 
 # esco con il valore di ritorno dell'ultimo comando eseguito
 exit $?
+
+# REVISIONI
+# 2020-07-02 controllo funzionamento su Debian 10 (buster)

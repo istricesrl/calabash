@@ -101,6 +101,9 @@ if [[ "$?" -eq 0 ]]; then
     # links - un browser testuale
     apt-get install links
 
+    # lsof
+    apt-get install lsof
+
     # less - un visualizzatore di file testuale
     apt-get install less
 
@@ -112,6 +115,9 @@ if [[ "$?" -eq 0 ]]; then
 
     # ntp - un client per la sincronizzazione dell'orario
     apt-get install ntp
+
+    # net-tools - utility per la rete
+    apt-get install net-tools
 
     # speedtest-cli - un'utility per testare la velocità di rete
     apt-get install speedtest-cli
@@ -127,6 +133,9 @@ if [[ "$?" -eq 0 ]]; then
 
     # rsync
     apt-get install rsync
+
+    # wget
+    apt-get install wget
 
     # dnsutils - utility per l'interrogazione del DNS
     apt-get install dnsutils

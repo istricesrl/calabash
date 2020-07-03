@@ -20,6 +20,21 @@ connection data needed for other `va.mysql.*` scripts to run; the file format is
 
 ## script
 
+### bak script
+these scripts are intended to simplify copy, archive and backup operations
+
+#### va.bak.sh
+this script simply creates a copy of a file by adding a timestamp (created via `va.txt.timestamp.compressed.sh`)
+to the name to create a backup copy of it
+
+usage:
+`va.bak.sh fileName`
+
+example:
+`va.bak.sh file.txt`
+
+will create a file named `file.txt.20200703112437` if launched on 2020/07/03 11:24:37
+
 ### wget script
 these are script designed to make it easier to use wget in common tasks
 
@@ -27,9 +42,7 @@ these are script designed to make it easier to use wget in common tasks
 this script creates a simple list of all URLs from a web site; it is useful if you want a map of the site or so
 
 usage:
-
 `va.wget.pages.list.sh sourceSiteAddress listFileWithPath`
 
 example:
-
 `va.wget.pages.list.sh https://some.site.tld /tmp/urlsofsomesite.txt`

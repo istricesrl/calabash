@@ -9,6 +9,15 @@ just clone or download the repository and merge the usr folder from the reposito
     apt-get install wget && wget http://calabash.videoarts.it/va.current.tar
     tar -xvf ./va.current.tar --overwrite -C /
 
+## config files
+calabash uses a few config file to keep important informations at hand, these are usually located in /etc and
+here are a short description for each one
+
+### /etc/mysql.conf
+if you install the MySQL/MariaDb server fron the `va.lamp.setup.sh` script, this file will be created with the
+connection data needed for other `va.mysql.*` scripts to run; the file format is the one needed for use with the
+`--defaults-file` parameter of most MySQL tools
+
 ## script
 
 ### wget script

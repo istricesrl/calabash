@@ -23,7 +23,8 @@ if [ -n "$1" ]; then
     # TODO
     # creare utente exim4 OPPURE collegare exim4 al database?
 
-    echo "$1 : $(doveadm pw -s SHA256-CRYPT -p $PASW)" >> /etc/vmail/$DOM/passwd
+    echo "$1:$(doveadm pw -s SHA256-CRYPT -p $PASW)" >> /etc/vmail/$DOM/passwd
+    echo "$1@$DOM:$(mkpasswd -m sha-512 '$PASW')" >> /etc/exim4/passwd && service exim4 restart
 
 else
 

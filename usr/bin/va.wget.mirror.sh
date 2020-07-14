@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# NOTA
+# UTILIZZO
 # scarica un sito per la navigazione offline
 
 wget --mirror --convert-links --adjust-extension --page-requisites --no-parent $1

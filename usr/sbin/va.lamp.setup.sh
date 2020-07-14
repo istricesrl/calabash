@@ -68,6 +68,9 @@ if [[ "$?" -eq 0 ]]; then
     apt-get install redis-server
     apt-get install php-redis
 
+    # installazione di php-zip
+    apt-get install php-zip
+
     # installazione di certbot
     # apt-get install python-certbot-apache -t stretch-backports
     apt-get install python-certbot-apache

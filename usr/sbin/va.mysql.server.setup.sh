@@ -49,7 +49,7 @@ if [[ "$?" -eq 0 ]]; then
     FILECONF=/etc/mysql/mariadb.conf.d/50-server.cnf
 
     # backup dei files di configurazione coinvolti
-    va.bak.sh $FILECONF /root/
+    va.bak.sh $FILECONF /var/backups/
 
     # TODO
     echo "[server]" > $FILECONF

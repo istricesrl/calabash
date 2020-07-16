@@ -7,6 +7,11 @@ apt-get install exim4 sasl2-bin swaks libnet-ssleay-perl
 apt-get install certbot
 certbot certonly --standalone -d $(hostname)
 
+# utente vmail
+sudo groupadd -g 5000 vmail
+sudo useradd -g vmail -u 5000 vmail -d /var/mail
+sudo chown -R vmail:vmail /var/mail
+
 # permessi per i certificati
 adduser Debian-exim sasl
 groupadd privkey_users

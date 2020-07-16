@@ -6,6 +6,11 @@
 # verifico che il file esista
 if [[ -e "$1" ]]; then
 
+    # verifico che la cartella esista
+    if [[ -n "$2" ]]; then
+	mkdir -p "$2"
+    fi
+
     # log
     logger "$0 $1"
 

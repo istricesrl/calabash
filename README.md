@@ -35,13 +35,14 @@ to the name to create a backup copy of it
 
 usage:
 
-    va.bak.sh FILE
+    va.bak.sh FILE [PATH]
 
 example:
 
     va.bak.sh file.txt
 
-will create a file named `file.txt.20200703112437` if launched on 2020/07/03 11:24:37
+will create a file named `file.txt.20200703112437` if launched on 2020/07/03 11:24:37; optionally, a second parameter can be
+specifified to save the copy in a custom path, otherwise, the copy will be created in the same folder of the original
 
 #### va.bak.tar.sh
 this script creates a compressed archive from a file or a directory

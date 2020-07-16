@@ -1,6 +1,9 @@
 # calabash
 this is a simple Bash script collection to make some Debian administration task more easy :)
 
+## disclaimer
+this document is still a work in progress, please be patient and check the comments in the scripts for more info
+
 ## installation
 just clone or download the repository and merge the `usr` folder from the repository with the `usr` folder on your Linux box
 

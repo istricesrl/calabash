@@ -119,6 +119,9 @@ if [[ "$?" -eq 0 ]]; then
     # net-tools - utility per la rete
     apt-get install net-tools
 
+    # ethtool - utility per la rete
+    apt-get install ethtool
+
     # speedtest-cli - un'utility per testare la velocità di rete
     apt-get install speedtest-cli
 

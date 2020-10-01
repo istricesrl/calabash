@@ -15,7 +15,9 @@ P="$1"; [[ "$P" != /* ]] && P="/$P"
 if [ -d /var/www$P ]; then
 
     # resetto i permessi
-    chmod -R 775 /var/www$P
+    find /var/www$P -type d		-not \( -path ".git" -prune \)		-exec echo {} \; -exec chmod 775 {} \;
+    find /var/www$P -type f		-not \( -path ".git" -prune \)		-exec echo {} \; -exec chmod 664 {} \;
+    find /var/www$P -name '*.sh'	-not \( -path ".git" -prune \)		-exec echo {} \; -exec chmod 775 {} \;
 
     # resetto proprietario e gruppo
     chown -R www-data:www-data /var/www$P

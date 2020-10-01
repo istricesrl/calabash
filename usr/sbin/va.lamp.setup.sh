@@ -63,6 +63,7 @@ if [[ "$?" -eq 0 ]]; then
     # installazione di memcache
     apt-get install memcached
     apt-get install php-memcache
+    apt-get install php-memcached
 
     # installazione di redis
     apt-get install redis-server

@@ -36,130 +36,130 @@ if [[ "$?" -eq 0 ]]; then
     # in questa sezione vengono installati i servizi erogati dalla macchina
 
     # SSH
-    apt-get install ssh
+    apt-get install -y ssh
 
     # exim4 - server di posta
-    apt-get install exim4
-    apt-get install gnutls-bin
-    apt-get install libsasl2-modules
+    apt-get install -y exim4
+    apt-get install -y gnutls-bin
+    apt-get install -y libsasl2-modules
     /usr/share/doc/exim4-base/examples/exim-gencert
 
     # mailutils - utility per la posta
-    apt-get install mailutils
+    apt-get install -y mailutils
 
     # monit - server di monitoraggio
     # NOTA monit non è più disponibile in Debian 10 e non sembrano esserci alternative valide
-    # apt-get install monit
+    # apt-get install -y monit
 
     # SEZIONE PROGRAMMI DI MONITORAGGIO
     # in questa sezione vengono installati programmi utili per tenere sotto controllo la macchina
 
     # iotop - utility per il controllo dell'I/O disco
-    apt-get install iotop
+    apt-get install -y iotop
 
     # htop - utility per visualizzare i processi
-    apt-get install htop
+    apt-get install -y htop
 
     # iftop - utility per il controllo del traffico di rete
-    apt-get install iftop
+    apt-get install -y iftop
 
     # psmisc - utility per il controllo dei processi
-    apt-get install psmisc
+    apt-get install -y psmisc
 
     # ncdu - utility per il controllo dello spazio usato su disco
-    apt-get install ncdu
+    apt-get install -y ncdu
 
     # SEZIONE PROGRAMMI UTILI
     # in questa sezione vengono installati programmi utili per gestire il sistema
 
     # utility per il firewall
-    apt-get install ethtool
+    apt-get install -y ethtool
 
     # utility per Latex
-    apt-get install texlive-latex-base
-    apt-get install doxygen-latex
-    apt-get install texlive-lang-italian
+    apt-get install -y texlive-latex-base
+    apt-get install -y doxygen-latex
+    apt-get install -y texlive-lang-italian
 
     # utility per Bash
-    apt-get install bash-completion
+    apt-get install -y bash-completion
 
     # utility per Perl
-    apt-get install libconfig-inifiles-perl
+    apt-get install -y libconfig-inifiles-perl
 
     # utility per il Debian keyring
-    apt-get install debian-keyring debian-archive-keyring
+    apt-get install -y debian-keyring debian-archive-keyring
 
     # utility per PostScript
-    apt-get install a2ps
+    apt-get install -y a2ps
 
     # utility per la gestione delle release LSB
-    apt-get install lsb-release
+    apt-get install -y lsb-release
 
     # Midnight Commander
-    apt-get install mc
+    apt-get install -y mc
 
     # links - un browser testuale
-    apt-get install links
+    apt-get install -y links
 
     # lsof
-    apt-get install lsof
+    apt-get install -y lsof
 
     # less - un visualizzatore di file testuale
-    apt-get install less
+    apt-get install -y less
 
     # ncftp - un client FTP a linea di comando
-    apt-get install ncftp
+    apt-get install -y ncftp
 
     # curl - un client web a linea di comando
-    apt-get install curl
+    apt-get install -y curl
 
     # ntp - un client per la sincronizzazione dell'orario
-    apt-get install ntp
+    apt-get install -y ntp
 
     # net-tools - utility per la rete
-    apt-get install net-tools
+    apt-get install -y net-tools
 
     # ethtool - utility per la rete
-    apt-get install ethtool
+    apt-get install -y ethtool
 
     # speedtest-cli - un'utility per testare la velocità di rete
-    apt-get install speedtest-cli
+    apt-get install -y speedtest-cli
 
     # dsh - un tool per dare comandi a più macchine contemporaneamente
-    apt-get install dsh
+    apt-get install -y dsh
 
     # at - pianificatore di comandi
-    apt-get install at
+    apt-get install -y at
 
     # pwgen - generatore di password
-    apt-get install pwgen
+    apt-get install -y pwgen
 
     # rsync
-    apt-get install rsync
+    apt-get install -y rsync
 
     # wget
-    apt-get install wget
+    apt-get install -y wget
 
     # dnsutils - utility per l'interrogazione del DNS
-    apt-get install dnsutils
+    apt-get install -y dnsutils
 
     # whois - pacchetto di utility varie
-    apt-get install whois
+    apt-get install -y whois
 
     # bzip2 - un programma di compressione
-    apt-get install bzip2
+    apt-get install -y bzip2
 
     # nmap - un tool per il debug della rete
-    apt-get install nmap
+    apt-get install -y nmap
 
     # whiptail - interfaccia utente per gli script bash
-    apt-get install whiptail
+    apt-get install -y whiptail
 
     # locales - pacchetto per la localizzazione
-    apt-get install locales
+    apt-get install -y locales
 
     # gestione dei video
-    apt-get install ffmpeg mediainfo
+    apt-get install -y ffmpeg mediainfo
 
     # SEZIONE CONFIGURAZIONE
     # in questa sezione viene configurato il sistema

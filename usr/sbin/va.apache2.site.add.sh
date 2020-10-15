@@ -152,6 +152,23 @@ if [[ "$?" -eq 0 ]]; then
 	certbot --apache -d $URL_SITO $DOMAINS
     fi
 
+    # utente FTP
+    whiptail	--title "creazione utente FTP" \
+		--yesno "Vuoi creare un utente FTP per questo sito?" \
+		$VMOD $HMOD
+    if [[ "$?" -eq 0 ]]; then
+
+	# password
+	TITLE="password per l'utente"
+	TEXT="Inserisci una password sicura per l'utente (suggerita $(pwgen -nyc 16 1))"
+	USERPW="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)"
+	DOCUMENT_ROOT="$FOLDER/$DROOT"
+
+	# creazione utente
+	va.user.add.sh $(echo $URL_SITO | awk -F[\.\.] '{print $2}') $USERPW /var/www/$DOCUMENT_ROOT www-data
+
+    fi
+
 fi
 
 # uscita

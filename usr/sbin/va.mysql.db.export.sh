@@ -15,8 +15,10 @@ if [[ -n $1 ]]; then
 
     # esporto il database
     /usr/bin/mysqldump --defaults-extra-file=/etc/mysql.conf --opt --routines --single-transaction --events -u root "$1" \
-    | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v '^\/\*' | grep -v -e '^[[:space:]]*$' \
+    | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v -e '^[[:space:]]*$' \
     | sed -E 's/DEFINER=`[a-z]+`@`[a-z0-9\.%]+`/DEFINER=CURRENT_USER()/g' | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' > $destinazione
+
+    # PRIMA ERA | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v '^\/\*' | grep -v -e '^[[:space:]]*$' \
 
     # se lo script non gira in modalità silenziosa...
     if [[ "$3" != "quiet" ]]; then

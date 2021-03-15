@@ -14,7 +14,9 @@ if [[ -n $1 ]]; then
     destinazione="$2/$1.$(va.txt.timestamp.compressed.sh).sql"
 
     # esporto il database
-    /usr/bin/mysqldump --defaults-extra-file=/etc/mysql.conf --opt --routines --single-transaction --events -u root "$1" > $destinazione
+    /usr/bin/mysqldump --defaults-extra-file=/etc/mysql.conf --opt --routines --single-transaction --events -u root "$1" \
+    | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v '^\/\*' | grep -v -e '^[[:space:]]*$' \
+    | sed -E 's/DEFINER=`[a-z]+`@`[a-z0-9\.%]+`/DEFINER=CURRENT_USER()/g' | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' > $destinazione
 
     # se lo script non gira in modalità silenziosa...
     if [[ "$3" != "quiet" ]]; then

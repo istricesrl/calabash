@@ -19,13 +19,13 @@ whiptail	--title "setup server LAMP" \
 if [[ "$?" -eq 0 ]]; then
 
     # installazione di Apache2
-    apt-get install apache2
+    apt-get install -y apache2
 
     # risoluzione errore AH00558
     cp /usr/share/doc/va.script/examples/etc/apache2/conf-enabled/servername.conf /etc/apache2/conf-enabled/servername.conf
 
     # installazione di apachetop
-    apt-get install apachetop
+    apt-get install -y apachetop
 
     # attivazione del modulo rewrite
     a2enmod rewrite
@@ -37,44 +37,44 @@ if [[ "$?" -eq 0 ]]; then
     a2enmod headers
 
     # installazione di PHP
-    apt-get install php
+    apt-get install -y php
 
     # installazione di composer
-    apt-get install composer
+    apt-get install -y composer
 
     # installazione degli strumenti di sviluppo
-    apt-get install php-dev
+    apt-get install -y php-dev
 
     # installazione di PEAR
-    apt-get install php-pear
+    apt-get install -y php-pear
 
     # installazione di CURL
-    apt-get install php-curl
+    apt-get install -y php-curl
 
     # installazione di SSH
-    apt-get install php-ssh2
+    apt-get install -y php-ssh2
 
     # installazione di GD
-    apt-get install php-gd
+    apt-get install -y php-gd
 
     # installazione libreria per xml
-    apt-get install php-xml
+    apt-get install -y php-xml
 
     # installazione di memcache
-    apt-get install memcached
-    apt-get install php-memcache
-    apt-get install php-memcached
+    apt-get install -y memcached
+    apt-get install -y php-memcache
+    apt-get install -y php-memcached
 
     # installazione di redis
-    apt-get install redis-server
-    apt-get install php-redis
+    apt-get install -y redis-server
+    apt-get install -y php-redis
 
     # installazione di php-zip
-    apt-get install php-zip
+    apt-get install -y php-zip
 
     # installazione di certbot
-    # apt-get install python-certbot-apache -t stretch-backports
-    apt-get install python-certbot-apache
+    # apt-get install -y python-certbot-apache -t stretch-backports
+    apt-get install -y python-certbot-apache
 
     # aggiornamento automatico certificati
     cp /usr/share/doc/va.script/examples/etc/cron.monthly/certbot /etc/cron.monthly/certbot
@@ -108,30 +108,30 @@ if [[ "$?" -eq 0 ]]; then
 	chmod 644 $FILECONF
 
 	# installazione di MySQL
-	# Debian 9 apt-get install mysql-server
-	apt-get install mariadb-server
+	# Debian 9 apt-get install -y mysql-server
+	apt-get install -y mariadb-server
 
 	# installazione di mysqltuner
-	apt-get install mysqltuner
+	apt-get install -y mysqltuner
 
 	# installazione di Percona toolkit
-	apt-get install percona-toolkit
+	apt-get install -y percona-toolkit
 
 	# installazione di MySQL utilities
-	apt-get install mysql-utilities
+	apt-get install -y mysql-utilities
 
 	# NOTA mytop non esiste più in Debian Stable,
 	# in alternativa utilizzare?
 
 	# installazione di MySQL per PHP
-	apt-get install php-mysql
+	apt-get install -y php-mysql
 
 	# installazione di Adminer (sostituto di phpMyAdmin in Debian 10)
-	apt-get install adminer
+	apt-get install -y adminer
 	echo "Alias /adminer /usr/share/adminer/adminer" > /etc/apache2/conf-enabled/adminer.conf
 
 	# installazione e configurazione di tzdata
-	apt-get install tzdata
+	apt-get install -y tzdata
 	mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --defaults-file=/etc/mysql.conf -u root --force mysql
 
 	# consento l'accesso remoto per root
@@ -157,10 +157,10 @@ if [[ "$?" -eq 0 ]]; then
     if [[ "$?" -eq 0 ]]; then
 
 	# installazione del server
-	apt-get install postgresql
+	apt-get install -y postgresql
 
 	# installazione di PhpPgAdmin
-	apt-get install phppgadmin
+	apt-get install -y phppgadmin
 
 	# file di configurazione per i programmi tipo mysql
 	FILECONF=/etc/phppgadmin/config.inc.php
@@ -313,7 +313,7 @@ if [[ "$?" -eq 0 ]]; then
 	# qui per sicurezza riavviare Apache
 
 	# Nginx
-	apt-get install nginx nginx-extras -y
+	apt-get install -y nginx nginx-extras -y
 
     fi
 

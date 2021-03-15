@@ -32,6 +32,13 @@ if [[ "$?" -eq 0 ]]; then
     hostnamectl set-hostname $FQDN
     sed -i -e "s/$OLDFQDN/$FQDN/g" /etc/hosts
 
+    # riconfigurazione della lingua
+    apt-get install -y locales
+    dpkg-reconfigure locales
+
+    # riconfigurazione del fuso orario
+    dpkg-reconfigure tzdata
+
     # SEZIONE SERVIZI
     # in questa sezione vengono installati i servizi erogati dalla macchina
 
@@ -155,20 +162,11 @@ if [[ "$?" -eq 0 ]]; then
     # whiptail - interfaccia utente per gli script bash
     apt-get install -y whiptail
 
-    # locales - pacchetto per la localizzazione
-    apt-get install -y locales
-
     # gestione dei video
     apt-get install -y ffmpeg mediainfo
 
     # SEZIONE CONFIGURAZIONE
     # in questa sezione viene configurato il sistema
-
-    # riconfigurazione della lingua
-    dpkg-reconfigure locales
-
-    # riconfigurazione del fuso orario
-    dpkg-reconfigure tzdata
 
     # creazione chiavi SSH
     if [[ ! -e /root/.ssh/id_rsa ]]; then

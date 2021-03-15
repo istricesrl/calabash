@@ -22,7 +22,9 @@ if [[ -n $1 ]]; then
 	--routines \
 	--single-transaction \
 	--events \
-	--no-data $1 | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v '^\/\*' | grep -v -e '^[[:space:]]*$' > $5$1.sql
+	--no-data $1 \
+	| sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v '^\/\*' | grep -v -e '^[[:space:]]*$' \
+	| sed -E 's/DEFINER=`[a-z]+`@`[a-z0-9\.%]+`/DEFINER=CURRENT_USER()/g' | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' > $5$1.sql
 
 else
 

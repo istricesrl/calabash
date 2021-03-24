@@ -29,7 +29,8 @@ if [[ -n $1 ]]; then
     rm -rf ./$1/_*
 
     # installo la nuova versione
-    mv -f ./glisweb-$BRANCHDIR/{.,}* ./$1
+    # mv -f ./glisweb-$BRANCHDIR/{.,}* ./$1
+    cp -rf ./glisweb-$BRANCHDIR/{.[!.],}* ./$1
 
     # elimino la vecchia cartella
     rm -rf ./glisweb-$BRANCHDIR

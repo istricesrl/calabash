@@ -75,6 +75,7 @@ if [[ "$?" -eq 0 ]]; then
     # installazione di certbot
     # apt-get install -y python-certbot-apache -t stretch-backports
     apt-get install -y python-certbot-apache
+    # apt-get install -y python3-certbot-dns-rfc2136
 
     # aggiornamento automatico certificati
     cp /usr/share/doc/va.script/examples/etc/cron.monthly/certbot /etc/cron.monthly/certbot

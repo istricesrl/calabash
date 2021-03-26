@@ -53,6 +53,7 @@ if [[ "$?" -eq 0 ]]; then
     # DEFAULT="0.0.1"
     DEFAULT="test"
     DROOT="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)"
+    DOCUMENT_BASE="$FOLDER/"
     DOCUMENT_ROOT="$FOLDER/$DROOT"
 
     # creo la document root
@@ -145,14 +146,21 @@ if [[ "$?" -eq 0 ]]; then
 		$VMOD $HMOD
     if [[ "$?" -eq 0 ]]; then
 
+	# username
+	DEFAULT="$(echo $URL_SITO | awk -F[\.\.] '{print $2}')"
+	TITLE="nome dell'utente"
+	TEXT="Inserisci il nome dell'utente (cambialo solo se sai cosa stai facendo)"
+	USERFTP="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)"
+
 	# password
+	DEFAULT="$(pwgen -nyc 16 1)"
 	TITLE="password per l'utente"
-	TEXT="Inserisci una password sicura per l'utente (suggerita $(pwgen -nyc 16 1))"
+	TEXT="Inserisci una password sicura per l'utente (suggerita $DEFAULT)"
 	USERPW="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)"
-	DOCUMENT_ROOT="$FOLDER/$DROOT"
 
 	# creazione utente
-	va.user.add.sh $(echo $URL_SITO | awk -F[\.\.] '{print $2}') $USERPW /var/www/$DOCUMENT_ROOT www-data
+#	va.user.add.sh $USERFTP $USERPW /var/www/$DOCUMENT_ROOT www-data
+	va.user.add.sh $USERFTP $USERPW /var/www/$FOLDER www-data
 
     fi
 

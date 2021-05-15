@@ -72,6 +72,15 @@ if [[ "$?" -eq 0 ]]; then
     # installazione di php-zip
     apt-get install -y php-zip
 
+    # installazione di php-xmlrpc
+    apt-get install php-xmlrpc
+
+    # installazione di php-intl
+    apt-get install php-intl
+
+    # installazione di php-soap
+    apt-get install php-soap
+
     # installazione di certbot
     # apt-get install -y python-certbot-apache -t stretch-backports
     apt-get install -y python-certbot-apache

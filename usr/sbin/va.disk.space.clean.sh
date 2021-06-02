@@ -13,11 +13,19 @@ find /var/log -name *.err.* -delete
 find /var/log -name *.info.* -delete
 find /var/log -name *.warn.* -delete
 
+# elimino i log dei siti
+find /var/www -name *.log -delete
+
 # elimino i vecchi backup
-va.disk.file.old.delete.sh /var/backups 45
+va.disk.file.old.delete.sh /var/backups 30
 
 # elimino i vecchi temporanei
 va.disk.file.old.delete.sh /tmp 15
+
+# pulisco i log di apache
+for i in $( find /var/log/apache2 -name "access.log" -o -name "error.log" ); do
+    echo -n > $i
+done
 
 # pulizia di apt
 apt-get clean

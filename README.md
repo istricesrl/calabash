@@ -13,6 +13,14 @@ just clone or download the repository and merge the `usr` folder from the reposi
     wget http://calabash.videoarts.it/va.current.tar
     tar -xvf ./va.current.tar --overwrite -C /
 
+### installation from github
+
+    apt-get install wget
+    https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
+    unzip -qq ./calabash-master.zip
+    cp -R ./calabash-master/usr /
+    rm -rf ./calabash-master*
+
 ## config files
 calabash uses a few config file to keep important informations at hand, these are usually located in /etc and
 here are a short description for each one

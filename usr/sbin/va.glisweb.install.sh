@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # log
-logger "$0 $1"
+logger "$0 $1 $2"
 
 # controllo i parametri
 if [[ -n $1 ]]; then
+
+    mkdir -p $1
 
     if [[ -z $2 ]]; then
         BRANCH=master
@@ -26,26 +28,35 @@ if [[ -n $1 ]]; then
     unzip ./$BRANCHZIP.zip
 
     # elimino il vecchio framework
-    rm -rf ./$1/_*
+    rm -rf $1/_*
 
     # installo la nuova versione
     # mv -f ./glisweb-$BRANCHDIR/{.,}* ./$1
-    cp -rf ./glisweb-$BRANCHDIR/{.[!.],}* ./$1
+    cp -rf ./glisweb-$BRANCHDIR/{.[!.],}* $1
 
     # elimino la vecchia cartella
     rm -rf ./glisweb-$BRANCHDIR
     rm -rf ./$BRANCHDIR.zip
 
     # installo il .gitignore se è presente un repository .git
-    if [ -f ./$1/_usr/_deploy/_git/.gitignore -a -d ./$1/.git ]; then
-        cp ./$1/_usr/_deploy/_git/.gitignore ./$1/.gitignore
+    if [ -f $1/_usr/_deploy/_git/.gitignore -a -d $1/.git ]; then
+        cp $1/_usr/_deploy/_git/.gitignore $1/.gitignore
     fi
 
     # aggiorno composer
     cd $1/ && composer update
 
     # permessi
-    _src/_sh/_gw.permissions.reset.sh
+    $1/_src/_sh/_gw.permissions.reset.sh
+
+    # richiesta
+    echo -n "vuoi installare l'ambiente LAMP (s/n)? "
+    read YN
+
+    # configurazione
+    if [ "$YN" = "s" ]; then
+        $1/_src/_sh/_gw.environment.setup.sh
+    fi
 
     # richiesta
     echo -n "vuoi installare il database del sito e configurare il framework ora (s/n)? "
@@ -53,8 +64,8 @@ if [[ -n $1 ]]; then
 
     # configurazione
     if [ "$YN" = "s" ]; then
-        _src/_sh/_gw.mysql.install.sh
-        _src/_sh/_gw.config.sh base
+        $1/_src/_sh/_gw.mysql.install.sh
+        $1/_src/_sh/_gw.config.sh base
     fi
 
 else

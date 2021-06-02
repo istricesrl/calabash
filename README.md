@@ -7,18 +7,12 @@ this document is still a work in progress, please be patient and check the comme
 ## installation
 just clone or download the repository and merge the `usr` folder from the repository with the `usr` folder on your Linux box
 
-### installation from web
-
-    apt-get install wget
-    wget http://calabash.videoarts.it/va.current.tar
-    tar -xvf ./va.current.tar --overwrite -C /
-
 ### installation from github
 
     apt-get install wget
-    https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
+    wget https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
     unzip -qq ./calabash-master.zip
-    cp -R ./calabash-master/usr /
+    cp -R ./calabash-master/* /
     rm -rf ./calabash-master*
 
 ## config files

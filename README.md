@@ -1,5 +1,5 @@
 # calabash
-this is a simple Bash script collection to make some Debian administration task more easy :)
+this is a simple Bash script collection to make some Debian (and a little Ubuntu) administration task more easy :)
 
 ## disclaimer
 this document is still a work in progress, please be patient and check the comments in the scripts for more info

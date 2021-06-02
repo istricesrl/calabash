@@ -26,14 +26,15 @@ wget https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
 
 # scompatto gli script
 # tar -xf va.current.tar -C /
-unzip -qq ./calabash-master.zip
+unzip -qq ./master.zip
 
 # installo gli script
 cp -R ./calabash-master/* /
 
 # elimino il file scaricato
 # rm -f va.current.tar
-rm -rf ./calabash-master*
+rm -rf ./master.zip
+rm -rf ./calabash-master
 
 # annoto la versione corrente
 # echo $(va.curl.get.value.sh http://calabash.videoarts.it/va.current.version) > /etc/va.script.version

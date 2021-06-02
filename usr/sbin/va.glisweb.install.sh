@@ -6,8 +6,10 @@ logger "$0 $1 $2"
 # controllo i parametri
 if [[ -n $1 ]]; then
 
+    # creo la document root
     mkdir -p $1
 
+    # branch di default
     if [[ -z $2 ]]; then
         BRANCH=master
     else

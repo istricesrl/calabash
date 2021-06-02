@@ -12,8 +12,8 @@ just clone or download the repository and merge the `usr` folder from the reposi
     apt-get install wget
     wget https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
     unzip -qq ./master.zip
-    cp -R ./master/* /
-    rm -rf ./master*
+    cp -R ./calabash-master/* /
+    rm -rf ./*master*
 
 ## config files
 calabash uses a few config file to keep important informations at hand, these are usually located in /etc and

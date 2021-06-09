@@ -7,22 +7,24 @@ logger "$0 $1"
 if [[ -n $1 ]]; then
 
     # creo la document root
-    mkdir -p $1
+    sudo mkdir -p $1
 
     # clono il repository
     git clone https://github.com/istricesrl/glisweb.git
 
     # sposto il repository
-    cp -rf ./glisweb/{.[!.],}* $1/
+    sudo cp -rf ./glisweb/{.[!.],}* $1/
 
     # elimino la cartella di installazione
-    rm -rf ./glisweb
+    sudo rm -rf ./glisweb
+
+    # TODO chiedere la branch
 
     # aggiorno composer
     cd $1/ && apt-get install composer && composer update
 
     # permessi
-    $1/_src/_sh/_gw.permissions.reset.sh
+    # $1/_src/_sh/_gw.permissions.reset.sh
 
     # richiesta
     echo -n "vuoi installare l'ambiente LAMP (s/n)? "
@@ -30,8 +32,11 @@ if [[ -n $1 ]]; then
 
     # configurazione
     if [ "$YN" = "s" ]; then
+        # TODO verificare che venga giù con i permessi di esecuzione
         $1/_src/_sh/_gw.environment.setup.sh
     fi
+
+    # TODO chiedere se si vuole fare usermod -g www-data <utente>
 
     # richiesta
     echo -n "vuoi installare il database del sito (s/n)? "

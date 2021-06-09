@@ -7,7 +7,7 @@ logger "$0 $1"
 if [[ -n $1 ]]; then
 
     # creo la document root
-    mkdir -p $1
+    sudo mkdir -p $1
 
     # clono il repository
     git clone https://github.com/istricesrl/glisweb.git

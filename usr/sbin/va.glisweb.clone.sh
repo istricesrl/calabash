@@ -21,7 +21,7 @@ if [[ -n $1 ]]; then
     # TODO chiedere la branch
 
     # aggiorno composer
-    cd $1/ && apt-get install composer && composer update
+    cd $1/ && sudo apt-get install composer && composer update
 
     # permessi
     # $1/_src/_sh/_gw.permissions.reset.sh

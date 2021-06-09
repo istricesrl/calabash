@@ -14,7 +14,7 @@ rm -f ./google-chrome-stable_current_amd64.deb
 # wget https://downloads.slack-edge.com/linux_releases/slack-desktop-4.10.3-amd64.deb
 # sudo dpkg -i slack-desktop-*.deb
 # rm -f slack-desktop-*.deb
-sudo snap install slack
+sudo snap install slack --classic
 
 # Postman
 sudo snap install postman
@@ -27,7 +27,7 @@ sudo snap install postman
 # sudo apt-get update
 # sudo apt-get install code
 # rm -f packages.microsoft.gpg
-sudo snap install code
+sudo snap install code --classic
 
 # Dropbox
 # sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu disco main" > /etc/apt/sources.list.d/dropbox.list'

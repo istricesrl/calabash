@@ -61,12 +61,20 @@ if [[ -n $1 ]]; then
     fi
 
     # richiesta
-    echo -n "vuoi installare il database del sito e configurare il framework ora (s/n)? "
+    echo -n "vuoi installare il database del sito (s/n)? "
     read YN
 
     # configurazione
     if [ "$YN" = "s" ]; then
         $1/_src/_sh/_gw.mysql.install.sh
+    fi
+
+    # richiesta
+    echo -n "vuoi configurare il framework (s/n)? "
+    read YN
+
+    # configurazione
+    if [ "$YN" = "s" ]; then
         $1/_src/_sh/_gw.config.sh base
     fi
 

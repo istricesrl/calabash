@@ -10,7 +10,7 @@ if [[ -n $1 ]]; then
     mkdir -p $1
 
     # clono il repository
-    git clone git@github.com:istricesrl/glisweb.git
+    git clone https://github.com/istricesrl/glisweb.git
 
     # sposto il repository
     cp -rf ./glisweb/{.[!.],}* $1/
@@ -19,7 +19,7 @@ if [[ -n $1 ]]; then
     rm -rf ./glisweb
 
     # aggiorno composer
-    cd $1/ && composer update
+    cd $1/ && apt-get install composer && composer update
 
     # permessi
     $1/_src/_sh/_gw.permissions.reset.sh
@@ -34,19 +34,27 @@ if [[ -n $1 ]]; then
     fi
 
     # richiesta
-    echo -n "vuoi installare il database del sito e configurare il framework ora (s/n)? "
+    echo -n "vuoi installare il database del sito (s/n)? "
     read YN
 
     # configurazione
     if [ "$YN" = "s" ]; then
         $1/_src/_sh/_gw.mysql.install.sh
+    fi
+
+    # richiesta
+    echo -n "vuoi configurare il framework (s/n)? "
+    read YN
+
+    # configurazione
+    if [ "$YN" = "s" ]; then
         $1/_src/_sh/_gw.config.sh base
     fi
 
 else
 
     # help
-    echo "$0 <cartella> [branch]"
+    echo "$0 <cartella>"
 
 fi
 

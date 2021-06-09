@@ -36,8 +36,6 @@ if [[ -n $1 ]]; then
         $1/_src/_sh/_gw.environment.setup.sh
     fi
 
-    # TODO chiedere se si vuole fare usermod -g www-data <utente>
-
     # richiesta
     echo -n "vuoi installare il database del sito (s/n)? "
     read YN

@@ -18,13 +18,17 @@ if [[ -n $1 ]]; then
     # elimino la cartella di installazione
     sudo rm -rf ./glisweb
 
-    # TODO chiedere la branch
+    # cambio cartella
+    cd $1/
 
-    # aggiorno composer
-    cd $1/ && sudo apt-get install composer && composer update
+    # chiedo la branch
+    echo -n "quale branch vuoi usare per il setup (vuoto per master)? "
+    read BRANCH
 
-    # permessi
-    # $1/_src/_sh/_gw.permissions.reset.sh
+    # configurazione
+    if [ -n "$BRANCH" ]; then
+        sudo git checkout $BRANCH
+    fi
 
     # richiesta
     echo -n "vuoi installare l'ambiente LAMP (s/n)? "
@@ -32,7 +36,6 @@ if [[ -n $1 ]]; then
 
     # configurazione
     if [ "$YN" = "s" ]; then
-        # TODO verificare che venga giù con i permessi di esecuzione
         $1/_src/_sh/_gw.environment.setup.sh
     fi
 
@@ -52,6 +55,15 @@ if [[ -n $1 ]]; then
     # configurazione
     if [ "$YN" = "s" ]; then
         $1/_src/_sh/_gw.config.sh base
+    fi
+
+    # richiesta
+    echo -n "utente a cui aggiungere www-data come gruppo di login (vuoto per saltare)? "
+    read WWWUSER
+
+    # configurazione
+    if [ -n "$WWWUSER" ]; then
+        usermod -g www-data $WWWUSER
     fi
 
 else

@@ -1,11 +1,22 @@
 #!/bin/bash
 
+echo "script da rivedere"
+exit
+
+# NOTA probabilmente lo script funziona per l'installazione di un server relay
+# però per il semplice invio della posta sembra avere problemi
+
+# TODO rifare lo script prendendo spunto dalla configurazione delle webXX.istricesrl.it
+
 # installazione servizi
 apt-get install exim4 sasl2-bin swaks libnet-ssleay-perl
 
 # creazione certificato auto firmato
 apt-get install certbot
 certbot certonly --standalone -d $(hostname)
+
+# TODO se il nome host non contiene punti, certbot non funziona
+# in questo caso chiedere l'hostname all'utente!
 
 # utente vmail
 sudo groupadd -g 5000 vmail

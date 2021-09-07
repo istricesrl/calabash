@@ -8,7 +8,7 @@ else
 fi
 
 # versione remota
-REMOTE="$(va.curl.get.value.sh http://calabash.videoarts.it/va.current.version)"
+REMOTE="$(va.curl.get.value.sh https://calabash.videoarts.it/va.current.version)"
 
 # controllo
 if [ -z "$REMOTE" ]; then

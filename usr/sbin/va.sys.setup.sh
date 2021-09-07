@@ -39,6 +39,11 @@ if [[ "$?" -eq 0 ]]; then
     # riconfigurazione del fuso orario
     dpkg-reconfigure tzdata
 
+    # AGGIUNTA DNS
+    echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+    echo "35.195.12.4	calabash.videoarts.it" >> /etc/hosts
+
     # SEZIONE SERVIZI
     # in questa sezione vengono installati i servizi erogati dalla macchina
 

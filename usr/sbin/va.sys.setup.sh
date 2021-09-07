@@ -55,8 +55,7 @@ if [[ "$?" -eq 0 ]]; then
     apt-get install -y mailutils
 
     # monit - server di monitoraggio
-    # NOTA monit non è più disponibile in Debian 10 e non sembrano esserci alternative valide
-    # apt-get install -y monit
+    apt-get install -y monit
 
     # SEZIONE PROGRAMMI DI MONITORAGGIO
     # in questa sezione vengono installati programmi utili per tenere sotto controllo la macchina

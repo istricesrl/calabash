@@ -14,9 +14,9 @@ set eventqueue
     basedir /var/lib/monit/events
     slots 100
 
-set mailserver your.mail.server port your-port username "user" password "pasw" using tls
-set mail-format { from: monit@yourdomain.bogus }
-set alert destination@yourdomain.bogus
+# set mailserver your.mail.server port your-port username "user" password "pasw" using tls
+# set mail-format { from: monit@yourdomain.bogus }
+# set alert destination@yourdomain.bogus
 
 # Monitor
 
@@ -24,6 +24,11 @@ check device rootfs with path /
     if SPACE usage > 75% then alert
     if SPACE usage > 75% for 10 cycles then exec "/usr/sbin/va.disk.space.clean.sh"
     if SPACE usage > 75% for 20 cycles then exec "/sbin/shutdown -r now"
+
+# versione con notifica su Slack
+# check device rootfs with path /
+#     if SPACE usage > 75% then exec "/usr/bin/va.slack.msg.sh 'spazio su disco residuo inferiore al 25%'"
+
 
 # Includes
 

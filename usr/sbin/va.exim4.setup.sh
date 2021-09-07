@@ -1,7 +1,110 @@
 #!/bin/bash
 
-echo "script da rivedere"
-exit
+# NOTA
+# crea un nuovo sito in Apache2
+
+# log
+logger "$0"
+
+# dimensioni della finestra di whiptail
+VMOD=10
+HMOD=70
+
+# chiedo l'autorizzazione a procedere
+whiptail	--title "configurazione di exim4" \
+		--yesno "Questo script ti guiderà nella configurazione di exim4. Vuoi procedere?" \
+		$VMOD $HMOD
+
+# procedo
+if [[ "$?" -eq 0 ]]; then
+
+    # nome host
+    TITLE="nome host"
+    TEXT="Inserisci il nome host completo della macchina (ad es. mail.dominio.tld):"
+    DEFAULT="$(hostname -d)"
+    NOMEHOST=$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)
+
+    # nome relay
+    TITLE="relay SMTP"
+    TEXT="Inserisci il nome host completo di porta del relay SMTP da usare:"
+    DEFAULT="smtp.sendgrid.net::2525"
+    NOMERELAY=$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)
+
+    # utente relay
+    TITLE="utente relay SMTP"
+    TEXT="Inserisci il nome utente del relay SMTP da usare:"
+    DEFAULT="apikey"
+    USERRELAY=$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)
+
+    # password relay
+    TITLE="password relay SMTP"
+    TEXT="Inserisci la password del relay SMTP da usare:"
+    DEFAULT=""
+    PASSWRELAY=$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)
+
+    # TODO chiedere se la macchina fa da server o no
+    # SE FA DA SERVER
+    # ...
+    # ALTRIMENTI
+
+    # file di configurazione
+    FILECONF=/etc/exim4/update-exim4.conf.conf
+
+    # backup del file di configurazione
+    va.bak.sh $FILECONF
+
+    # scrittura del file di configurazione
+    echo "dc_eximconfig_configtype='smarthost'" > $FILECONF
+    echo "dc_other_hostnames=''" >> $FILECONF
+    echo "dc_local_interfaces='127.0.0.1'" >> $FILECONF
+    echo "dc_readhost='$NOMEHOST'" >> $FILECONF
+    echo "dc_relay_domains=''" >> $FILECONF
+    echo "dc_minimaldns='false'" >> $FILECONF
+    echo "dc_relay_nets=''" >> $FILECONF
+    echo "dc_smarthost='$NOMERELAY'" >> $FILECONF
+    echo "dc_use_split_config='false'" >> $FILECONF
+    echo "dc_hide_mailname='true'" >> $FILECONF
+    echo "dc_mailname_in_oh='true'" >> $FILECONF
+    echo "dc_localdelivery='mail_spool'" >> $FILECONF
+    echo >> $FILECONF
+    echo "CFILEMODE='644'" >> $FILECONF
+
+    # file di configurazione
+    FILECONF=/etc/exim4/passwd.client
+
+    # backup del file di configurazione
+    va.bak.sh $FILECONF
+
+    # scrittura del file di configurazione
+    echo "*:$USERRELAY:$PASSWRELAY" > $FILECONF
+
+fi
+
+# riavvio del servizio
+/etc/init.d/exim4 restart
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exit 0
 
 # NOTA probabilmente lo script funziona per l'installazione di un server relay
 # però per il semplice invio della posta sembra avere problemi

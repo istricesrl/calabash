@@ -24,14 +24,14 @@ if [[ "$?" -eq 0 ]]; then
 		$VMOD $HMOD
 
     # url del sito
-    TITLE="URL del sito"
-    TEXT="Inserisci l'URL principale del sito, per esempio www.sito.tld se sai già quale sarà il dominio di produzione oppure sito.agenzia.tld se ancora non lo sai"
+    TITLE="dominio del sito"
+    TEXT="Inserisci il dominio principale del sito, per esempio www.sito.tld se sai già quale sarà il dominio di produzione oppure sito.agenzia.tld se ancora non lo sai"
     DEFAULT=""
     URL_SITO=$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)
 
     # alias del sito
-    TITLE="alias del sito"
-    TEXT="Inserisci gli alias del sito separati da spazio"
+    TITLE="alias di dominio del sito"
+    TEXT="Inserisci gli alias di dominio del sito separati da spazio"
     DEFAULT=""
     ALIAS_SITO=$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "$DEFAULT" 3>&1 1>&2 2>&3)
 
@@ -88,7 +88,8 @@ if [[ "$?" -eq 0 ]]; then
     chmod -R 775 $LOG_FOLDER
 
     # repository git
-    if [ "$(basename $DOCUMENT_ROOT)" = "test" -o "$(basename $DOCUMENT_ROOT)" = "dev" ]; then
+    # OLD if [ "$(basename $DOCUMENT_ROOT)" = "test" -o "$(basename $DOCUMENT_ROOT)" = "dev" ]; then
+    if [ "$(basename $DOCUMENT_ROOT)" = "dev" ]; then
 	whiptail	--title "creazione repository Git" \
 			--yesno "Vuoi creare un repository Git locale per questo sito?" \
 			$VMOD $HMOD

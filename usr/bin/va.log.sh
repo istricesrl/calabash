@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # NOTA
-# scrive un'annotazione su /root/root.journal
+# scrive un'annotazione su un file
 
 # log
 logger "$0"
 
 # scrittura anntotazione
-va.log.sh "$1" /root/root.journal
+echo "$(va.txt.timestamp.sh) $1" >> $2
 
 # uscita
 exit $?

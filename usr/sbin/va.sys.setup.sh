@@ -103,6 +103,9 @@ if [[ "$?" -eq 0 ]]; then
     # utility per PostScript
     apt-get install -y a2ps
 
+    # utility per JSON
+    apt-get install -y jq
+
     # utility per la gestione delle release LSB
     apt-get install -y lsb-release
 

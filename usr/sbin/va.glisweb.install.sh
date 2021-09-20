@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # log
-logger "$0 $1 $2"
+logger "$0 $1 $2 $3"
 
 # controllo i parametri
 if [[ -n $1 ]]; then
@@ -51,37 +51,42 @@ if [[ -n $1 ]]; then
     # permessi
     $1/_src/_sh/_gw.permissions.reset.sh
 
-    # richiesta
-    echo -n "vuoi installare l'ambiente LAMP (s/n)? "
-    read YN
+    # se l'installazione è interattiva
+    if [ -n "$3" ]; then
 
-    # configurazione
-    if [ "$YN" = "s" ]; then
-        $1/_src/_sh/_gw.environment.setup.sh
-    fi
+        # richiesta
+        echo -n "vuoi installare l'ambiente LAMP (s/n)? "
+        read YN
 
-    # richiesta
-    echo -n "vuoi installare il database del sito (s/n)? "
-    read YN
+        # configurazione
+        if [ "$YN" = "s" ]; then
+            $1/_src/_sh/_gw.environment.setup.sh
+        fi
 
-    # configurazione
-    if [ "$YN" = "s" ]; then
-        $1/_src/_sh/_gw.mysql.install.sh
-    fi
+        # richiesta
+        echo -n "vuoi installare il database del sito (s/n)? "
+        read YN
 
-    # richiesta
-    echo -n "vuoi configurare il framework (s/n)? "
-    read YN
+        # configurazione
+        if [ "$YN" = "s" ]; then
+            $1/_src/_sh/_gw.mysql.install.sh
+        fi
 
-    # configurazione
-    if [ "$YN" = "s" ]; then
-        $1/_src/_sh/_gw.config.sh base
+        # richiesta
+        echo -n "vuoi configurare il framework (s/n)? "
+        read YN
+
+        # configurazione
+        if [ "$YN" = "s" ]; then
+            $1/_src/_sh/_gw.config.sh base
+        fi
+
     fi
 
 else
 
     # help
-    echo "$0 <cartella> [branch]"
+    echo "$0 <cartella> [branch] [quiet]"
 
 fi
 

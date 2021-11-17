@@ -12,7 +12,7 @@ HMOD=70
 
 FROM="root@$( cat /etc/mailname )"
 
-MITTENTE=$(whiptail --title "mittente" --inputbox "Inserisci il mittente della mail di test" $VMOD $HMOD "$FROM" 3>&1 1>&2 2>&3)
+FROM=$(whiptail --title "mittente" --inputbox "Inserisci il mittente della mail di test" $VMOD $HMOD "$FROM" 3>&1 1>&2 2>&3)
 DESTINATARIO=$(whiptail --title "destinatario" --inputbox "Inserisci il destinatario della mail di test" $VMOD $HMOD "" 3>&1 1>&2 2>&3)
 OGGETTO=$(whiptail --title "oggetto" --inputbox "Inserisci l'oggetto della mail di test" $VMOD $HMOD "mail di test da $FROM" 3>&1 1>&2 2>&3)
 TESTO=$(whiptail --title "testo" --inputbox "Inserisci il testo della mail di test" $VMOD $HMOD "Questa è una mail di test da $FROM." 3>&1 1>&2 2>&3)

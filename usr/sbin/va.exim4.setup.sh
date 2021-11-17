@@ -45,6 +45,8 @@ if [[ "$?" -eq 0 ]]; then
     # TODO chiedere se la macchina fa da server o no
     # SE FA DA SERVER
     # ...
+    # (vedi sotto)
+    # ...
     # ALTRIMENTI
 
     # file di configurazione

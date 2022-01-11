@@ -52,7 +52,7 @@ if [[ -n $1 ]]; then
     $1/_src/_sh/_gw.permissions.reset.sh
 
     # se l'installazione è interattiva
-    if [ -n "$3" ]; then
+    if [ -z "$3" ]; then
 
         # richiesta
         echo -n "vuoi installare l'ambiente LAMP (s/n)? "
@@ -78,7 +78,8 @@ if [[ -n $1 ]]; then
 
         # configurazione
         if [ "$YN" = "s" ]; then
-            $1/_src/_sh/_gw.config.sh base
+            read -p "template di configurazione (base/sviluppo)? " TP
+            $1/_src/_sh/_gw.config.sh $TP
         fi
 
     fi

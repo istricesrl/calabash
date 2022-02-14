@@ -54,14 +54,14 @@ if [[ -n $1 ]]; then
     # se l'installazione è interattiva
     if [ -z "$3" ]; then
 
-        # richiesta
-        echo -n "vuoi installare l'ambiente LAMP (s/n)? "
-        read YN
+#        # richiesta
+#        echo -n "vuoi installare l'ambiente LAMP (s/n)? "
+#        read YN
 
-        # configurazione
-        if [ "$YN" = "s" ]; then
-            $1/_src/_sh/_gw.environment.setup.sh
-        fi
+#        # configurazione
+#        if [ "$YN" = "s" ]; then
+#            $1/_src/_sh/_gw.environment.setup.sh
+#        fi
 
 #        # richiesta
 #        echo -n "vuoi installare il database del sito (s/n)? "

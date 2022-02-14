@@ -8,6 +8,11 @@ if [ -n "$4" ]; then
 
     MSG="$4"
 
+elif [ -n "$2" ]; then
+
+    . /etc/slack.$1.conf
+    MSG="$2"
+
 elif [ -f /etc/slack.conf ]; then
 
     . /etc/slack.conf

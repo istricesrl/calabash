@@ -16,7 +16,7 @@ if [[ -n $1 ]]; then
     # esporto il database
     /usr/bin/mysqldump --defaults-extra-file=/etc/mysql.conf --opt --max_allowed_packet=512M --routines --single-transaction --events -u root "$1" \
     | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v -e '^[[:space:]]*$' \
-    | sed -E 's/DEFINER=`[a-z]+`@`[a-z0-9\.%]+`/DEFINER=CURRENT_USER()/g' | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' > $destinazione
+    | sed -E 's/DEFINER=`[a-z0-9]+`@`[a-z0-9\.%]+`/DEFINER=CURRENT_USER()/g' | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' > $destinazione
 
     # PRIMA ERA | sed 's/ AUTO_INCREMENT=[0-9]*\b//g' | grep -v '^--' | grep -v '^\/\*' | grep -v -e '^[[:space:]]*$' \
 

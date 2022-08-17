@@ -49,7 +49,7 @@ if [[ -n $1 ]]; then
     cd $1/ && composer update
 
     # permessi
-    $1/_src/_sh/_gw.permissions.reset.sh
+    $1/_src/_sh/_lamp.permissions.reset.sh
 
     # se l'installazione è interattiva
     if [ -z "$3" ]; then

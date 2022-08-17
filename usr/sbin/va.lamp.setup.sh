@@ -82,8 +82,9 @@ if [[ "$?" -eq 0 ]]; then
     apt-get install php-soap
 
     # installazione di certbot
+    apt-get install -y certbot
     # apt-get install -y python-certbot-apache -t stretch-backports
-    apt-get install -y python-certbot-apache
+    apt-get install -y python3-certbot-apache
     # apt-get install -y python3-certbot-dns-rfc2136
 
     # aggiornamento automatico certificati

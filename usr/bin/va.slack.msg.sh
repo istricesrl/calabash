@@ -28,3 +28,6 @@ fi
 curl -s -o /dev/null -X POST -H 'Content-type: application/json' --data "{\"text\":\"$(hostname -f): $MSG\"}" https://hooks.slack.com/services/$SA/$SB/$SC
 
 exit 0
+
+# NOTE
+# https://api.slack.com/apps/

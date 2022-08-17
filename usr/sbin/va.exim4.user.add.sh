@@ -4,6 +4,8 @@ logger "$0"
 
 /usr/share/doc/exim4-base/examples/exim-adduser
 
+echo "$( cat /etc/exim4/passwd | sort -h )" > /etc/exim4/passwd
+
 chown root:Debian-exim /etc/exim4/passwd
 chmod 640 /etc/exim4/passwd
 

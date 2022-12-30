@@ -324,7 +324,7 @@ if [[ "$?" -eq 0 ]]; then
 	# qui per sicurezza riavviare Apache
 
 	# Nginx
-	apt-get install -y nginx nginx-extras -y
+	apt-get install -y nginx nginx-extras
 
     fi
 

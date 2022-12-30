@@ -8,10 +8,14 @@ logger "$0 $1"
 
 if [[ -n $1 ]]; then
 
+    if [[ -n $2 ]]; then
+        CONN=" -h $2 -u $3 -p$4"
+    else
+        CONN=" --defaults-extra-file=/etc/mysql.conf"
+    fi
+
     /usr/bin/mysqldump \
-	-h $2 \
-	-u $3 \
-	-p$4 \
+	$CONN \
 	--add-drop-table \
 	--add-locks \
 	--disable-keys \

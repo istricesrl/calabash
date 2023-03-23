@@ -73,13 +73,13 @@ if [[ "$?" -eq 0 ]]; then
     apt-get install -y php-zip
 
     # installazione di php-xmlrpc
-    apt-get install php-xmlrpc
+    apt-get install -y php-xmlrpc
 
     # installazione di php-intl
-    apt-get install php-intl
+    apt-get install -y php-intl
 
     # installazione di php-soap
-    apt-get install php-soap
+    apt-get install -y php-soap
 
     # installazione di certbot
     apt-get install -y certbot
@@ -160,102 +160,102 @@ if [[ "$?" -eq 0 ]]; then
     fi
 
     # PostgreSQL
-    whiptail	--title "supporto per PostgreSQL" \
-		--yesno "PostgreSQL è un database relazionale ad alte prestazioni. Vuoi installare PostgreSQL?" \
-		$VMOD $HMOD
+#    whiptail	--title "supporto per PostgreSQL" \
+#		--yesno "PostgreSQL è un database relazionale ad alte prestazioni. Vuoi installare PostgreSQL?" \
+#		$VMOD $HMOD
 
     # procedo
-    if [[ "$?" -eq 0 ]]; then
+#    if [[ "$?" -eq 0 ]]; then
 
 	# installazione del server
-	apt-get install -y postgresql
+#	apt-get install -y postgresql
 
 	# installazione di PhpPgAdmin
-	apt-get install -y phppgadmin
+#	apt-get install -y phppgadmin
 
 	# file di configurazione per i programmi tipo mysql
-	FILECONF=/etc/phppgadmin/config.inc.php
+#	FILECONF=/etc/phppgadmin/config.inc.php
 
 	# backup dei files di configurazione coinvolti
-	va.bak.sh $FILECONF
+#	va.bak.sh $FILECONF
 
 	# impostazione del file di configurazione
-	echo "<?php" > $FILECONF
-	echo "        \$conf['servers'][0]['desc'] = 'PostgreSQL';" >> $FILECONF
-	echo "        \$conf['servers'][0]['host'] = 'localhost';" >> $FILECONF
-	echo "        \$conf['servers'][0]['port'] = 5432;" >> $FILECONF
-	echo "        \$conf['servers'][0]['sslmode'] = 'allow';" >> $FILECONF
-	echo "        \$conf['servers'][0]['defaultdb'] = 'template1';" >> $FILECONF
-	echo "        \$conf['servers'][0]['pg_dump_path'] = '/usr/bin/pg_dump';" >> $FILECONF
-	echo "        \$conf['servers'][0]['pg_dumpall_path'] = '/usr/bin/pg_dumpall';" >> $FILECONF
-	echo "        \$conf['default_lang'] = 'auto';" >> $FILECONF
-	echo "        \$conf['autocomplete'] = 'default on';" >> $FILECONF
-	echo "        \$conf['extra_login_security'] = false;" >> $FILECONF
-	echo "        \$conf['owned_only'] = false;" >> $FILECONF
-	echo "        \$conf['show_comments'] = true;" >> $FILECONF
-	echo "        \$conf['show_advanced'] = false;" >> $FILECONF
-	echo "        \$conf['show_system'] = false;" >> $FILECONF
-	echo "        \$conf['min_password_length'] = 1;" >> $FILECONF
-	echo "        \$conf['left_width'] = 200;" >> $FILECONF
-	echo "        \$conf['theme'] = 'default';" >> $FILECONF
-	echo "        \$conf['show_oids'] = false;" >> $FILECONF
-	echo "        \$conf['max_rows'] = 30;" >> $FILECONF
-	echo "        \$conf['max_chars'] = 50;" >> $FILECONF
-	echo "        \$conf['use_xhtml_strict'] = false;" >> $FILECONF
-	echo "        \$conf['help_base'] = 'http://www.postgresql.org/docs/%s/interactive/';" >> $FILECONF
-	echo "        \$conf['ajax_refresh'] = 3;" >> $FILECONF
-	echo "        \$conf['plugins'] = array();" >> $FILECONF
-	echo "        \$conf['version'] = 19;" >> $FILECONF
-	echo "?>" >> $FILECONF
+#	echo "<?php" > $FILECONF
+#	echo "        \$conf['servers'][0]['desc'] = 'PostgreSQL';" >> $FILECONF
+#	echo "        \$conf['servers'][0]['host'] = 'localhost';" >> $FILECONF
+#	echo "        \$conf['servers'][0]['port'] = 5432;" >> $FILECONF
+#	echo "        \$conf['servers'][0]['sslmode'] = 'allow';" >> $FILECONF
+#	echo "        \$conf['servers'][0]['defaultdb'] = 'template1';" >> $FILECONF
+#	echo "        \$conf['servers'][0]['pg_dump_path'] = '/usr/bin/pg_dump';" >> $FILECONF
+#	echo "        \$conf['servers'][0]['pg_dumpall_path'] = '/usr/bin/pg_dumpall';" >> $FILECONF
+#	echo "        \$conf['default_lang'] = 'auto';" >> $FILECONF
+#	echo "        \$conf['autocomplete'] = 'default on';" >> $FILECONF
+#	echo "        \$conf['extra_login_security'] = false;" >> $FILECONF
+#	echo "        \$conf['owned_only'] = false;" >> $FILECONF
+#	echo "        \$conf['show_comments'] = true;" >> $FILECONF
+#	echo "        \$conf['show_advanced'] = false;" >> $FILECONF
+#	echo "        \$conf['show_system'] = false;" >> $FILECONF
+#	echo "        \$conf['min_password_length'] = 1;" >> $FILECONF
+#	echo "        \$conf['left_width'] = 200;" >> $FILECONF
+#	echo "        \$conf['theme'] = 'default';" >> $FILECONF
+#	echo "        \$conf['show_oids'] = false;" >> $FILECONF
+#	echo "        \$conf['max_rows'] = 30;" >> $FILECONF
+#	echo "        \$conf['max_chars'] = 50;" >> $FILECONF
+#	echo "        \$conf['use_xhtml_strict'] = false;" >> $FILECONF
+#	echo "        \$conf['help_base'] = 'http://www.postgresql.org/docs/%s/interactive/';" >> $FILECONF
+#	echo "        \$conf['ajax_refresh'] = 3;" >> $FILECONF
+#	echo "        \$conf['plugins'] = array();" >> $FILECONF
+#	echo "        \$conf['version'] = 19;" >> $FILECONF
+#	echo "?>" >> $FILECONF
 
 	# permessi (-rw-r--r--)
-	chown root:root $FILECONF
-	chmod 644 $FILECONF
+#	chown root:root $FILECONF
+#	chmod 644 $FILECONF
 
 	# file di configurazione per i programmi tipo mysql
-	FILECONF=/etc/apache2/conf-available/phppgadmin.conf
+#	FILECONF=/etc/apache2/conf-available/phppgadmin.conf
 
 	# backup dei files di configurazione coinvolti
-	va.bak.sh $FILECONF
+#	va.bak.sh $FILECONF
 
 	# impostazione del file di configurazione
-	echo "Alias /phppgadmin /usr/share/phppgadmin" > $FILECONF
-	echo "<Directory /usr/share/phppgadmin>" >> $FILECONF
-	echo "<IfModule mod_dir.c>" >> $FILECONF
-	echo "  DirectoryIndex index.php" >> $FILECONF
-	echo "</IfModule>" >> $FILECONF
-	echo "AllowOverride All" >> $FILECONF
-	echo "<IfModule mod_php.c>" >> $FILECONF
-	echo "  php_flag magic_quotes_gpc Off" >> $FILECONF
-	echo "  php_flag track_vars On" >> $FILECONF
-	echo "</IfModule>" >> $FILECONF
-	echo "<IfModule !mod_php.c>" >> $FILECONF
-	echo "  <IfModule mod_actions.c>" >> $FILECONF
-	echo "    <IfModule mod_cgi.c>" >> $FILECONF
-	echo "      AddType application/x-httpd-php .php" >> $FILECONF
-	echo "      Action application/x-httpd-php /cgi-bin/php" >> $FILECONF
-	echo "    </IfModule>" >> $FILECONF
-	echo "    <IfModule mod_cgid.c>" >> $FILECONF
-	echo "      AddType application/x-httpd-php .php" >> $FILECONF
-	echo "      Action application/x-httpd-php /cgi-bin/php" >> $FILECONF
-	echo "    </IfModule>" >> $FILECONF
-	echo "  </IfModule>" >> $FILECONF
-	echo "</IfModule>" >> $FILECONF
-	echo "</Directory>" >> $FILECONF
+#	echo "Alias /phppgadmin /usr/share/phppgadmin" > $FILECONF
+#	echo "<Directory /usr/share/phppgadmin>" >> $FILECONF
+#	echo "<IfModule mod_dir.c>" >> $FILECONF
+#	echo "  DirectoryIndex index.php" >> $FILECONF
+#	echo "</IfModule>" >> $FILECONF
+#	echo "AllowOverride All" >> $FILECONF
+#	echo "<IfModule mod_php.c>" >> $FILECONF
+#	echo "  php_flag magic_quotes_gpc Off" >> $FILECONF
+#	echo "  php_flag track_vars On" >> $FILECONF
+#	echo "</IfModule>" >> $FILECONF
+#	echo "<IfModule !mod_php.c>" >> $FILECONF
+#	echo "  <IfModule mod_actions.c>" >> $FILECONF
+#	echo "    <IfModule mod_cgi.c>" >> $FILECONF
+#	echo "      AddType application/x-httpd-php .php" >> $FILECONF
+#	echo "      Action application/x-httpd-php /cgi-bin/php" >> $FILECONF
+#	echo "    </IfModule>" >> $FILECONF
+#	echo "    <IfModule mod_cgid.c>" >> $FILECONF
+#	echo "      AddType application/x-httpd-php .php" >> $FILECONF
+#	echo "      Action application/x-httpd-php /cgi-bin/php" >> $FILECONF
+#	echo "    </IfModule>" >> $FILECONF
+#	echo "  </IfModule>" >> $FILECONF
+#	echo "</IfModule>" >> $FILECONF
+#	echo "</Directory>" >> $FILECONF
 
 	# permessi (-rw-r--r--)
-	chown root:root $FILECONF
-	chmod 644 $FILECONF
+#	chown root:root $FILECONF
+#	chmod 644 $FILECONF
 
-    fi
+#    fi
 
     # MSSQL
-    whiptail	--title "supporto per MSSQL" \
-		--yesno "Desideri installare il supporto per MSSQL in PHP?" \
-		$VMOD $HMOD
+#    whiptail	--title "supporto per MSSQL" \
+#		--yesno "Desideri installare il supporto per MSSQL in PHP?" \
+#		$VMOD $HMOD
 
     # procedo
-    if [[ "$?" -eq 0 ]]; then
+#    if [[ "$?" -eq 0 ]]; then
 
 #apt-get install curl wget apt-transport-https
 #apt-get install unixodbc unixodbc-bin unixodbc-dev freetds-common freetds-bin unixodbc php7.0-sybase
@@ -305,17 +305,19 @@ if [[ "$?" -eq 0 ]]; then
 ## https://blogs.msdn.microsoft.com/dilkushp/2014/06/11/install-sql-odbc-driver-on-suse-linux/
 ## https://www.linuxquestions.org/questions/linux-software-2/making-db-queries-from-linux-to-windows-using-python-pyodbc-4175594193/
 
-	echo "non ancora implementato"
+#	echo "non ancora implementato"
 
-    fi
+#    fi
+
+# TODO nginx va installato con uno script a parte
 
     # Nginx
-    whiptail	--title "Nginx reverse proxy" \
-		--yesno "Desideri installare il reverse proxy Nginx?" \
-		$VMOD $HMOD
+#    whiptail	--title "Nginx reverse proxy" \
+#		--yesno "Desideri installare il reverse proxy Nginx?" \
+#		$VMOD $HMOD
 
     # procedo
-    if [[ "$?" -eq 0 ]]; then
+#    if [[ "$?" -eq 0 ]]; then
 
 	# TODO
 	# qui avvisare prima l'utente di sgomberare la porta 80 e aspettare che l'abbia fatto
@@ -324,9 +326,9 @@ if [[ "$?" -eq 0 ]]; then
 	# qui per sicurezza riavviare Apache
 
 	# Nginx
-	apt-get install -y nginx nginx-extras
+#	apt-get install -y nginx nginx-extras
 
-    fi
+#    fi
 
     # riavvio apache
     service apache2 restart

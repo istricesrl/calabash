@@ -165,56 +165,56 @@ if [[ "$?" -eq 0 ]]; then
 
     fi
 
-    # database MySQL
-    whiptail	--title "creazione utente e database MySQL" \
-		--yesno "Vuoi creare un utente e un database MySQL per questo sito?" \
-		$VMOD $HMOD
-    if [[ "$?" -eq 0 ]]; then
-
-	# server MySQL
-	TITLE="indirizzo del server di database"
-	TEXT="Inserisci l'indirizzo del server MySQL su cui creare il database"
-	MYSRV="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
-
-	# password di root
-	TITLE="ATTENZIONE! inserisci la password di root@$MYSRV"
-	TEXT="Inserisci la password per l'utente root@$MYSRV (serve per creare il database)"
-	MYPSW="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
-
-	# nome del database
-	TITLE="nome del database"
-	TEXT="Inserisci il nome del database da creare su $MYSRV"
-	MYDBN="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
-
-	# creo il database
-	mysql -h $MYSRV -u root -p"$MYPSW" -e "CREATE DATABASE $MYDBN;"
-
-	# nome utente
-	TITLE="nome utente del database"
-	TEXT="Inserisci il nome utente del database $MYSRV"
-	MYUSR="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
-
-	# utente MySQL
-	whiptail	--title "creazione dell'utente MySQL" \
-			--yesno "Vuoi creare l'utente MySQL $MYUSR?" \
-			$VMOD $HMOD
-	if [[ "$?" -eq 0 ]]; then
-
-	    # password
-	    TITLE="password per l'utente"
-	    TEXT="Inserisci una password sicura per l'utente $MYUSR@$MYSRV (suggerita $(pwgen -nyc 16 1))"
-	    MYUPW="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
-
-	    # creo l'utente
-	    mysql -h $MYSRV -u root -p"$MYPSW" -e "CREATE USER $MYUSR@'%' IDENTIFIED BY '$MYUPW';"
-
-	fi
-
-	# privilegi
-	mysql -h $MYSRV -u root -p"$MYPSW" -e "GRANT ALL PRIVILEGES ON $MYDBN.* TO $MYUSR@'%';"
-	mysql -h $MYSRV -u root -p"$MYPSW" -e "FLUSH PRIVILEGES;"
-
-    fi
+#    # database MySQL
+#    whiptail	--title "creazione utente e database MySQL" \
+#		--yesno "Vuoi creare un utente e un database MySQL per questo sito?" \
+#		$VMOD $HMOD
+#    if [[ "$?" -eq 0 ]]; then
+#
+#	# server MySQL
+#	TITLE="indirizzo del server di database"
+#	TEXT="Inserisci l'indirizzo del server MySQL su cui creare il database"
+#	MYSRV="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
+#
+#	# password di root
+#	TITLE="ATTENZIONE! inserisci la password di root@$MYSRV"
+#	TEXT="Inserisci la password per l'utente root@$MYSRV (serve per creare il database)"
+#	MYPSW="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
+#
+#	# nome del database
+#	TITLE="nome del database"
+#	TEXT="Inserisci il nome del database da creare su $MYSRV"
+#	MYDBN="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
+#
+#	# creo il database
+#	mysql -h $MYSRV -u root -p"$MYPSW" -e "CREATE DATABASE $MYDBN;"
+#
+#	# nome utente
+#	TITLE="nome utente del database"
+#	TEXT="Inserisci il nome utente del database $MYSRV"
+#	MYUSR="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
+#
+#	# utente MySQL
+#	whiptail	--title "creazione dell'utente MySQL" \
+#			--yesno "Vuoi creare l'utente MySQL $MYUSR?" \
+#			$VMOD $HMOD
+#	if [[ "$?" -eq 0 ]]; then
+#
+#	    # password
+#	    TITLE="password per l'utente"
+#	    TEXT="Inserisci una password sicura per l'utente $MYUSR@$MYSRV (suggerita $(pwgen -nyc 16 1))"
+#	    MYUPW="$(whiptail --title "$TITLE" --inputbox "$TEXT" $VMOD $HMOD "" 3>&1 1>&2 2>&3)"
+#
+#	    # creo l'utente
+#	    mysql -h $MYSRV -u root -p"$MYPSW" -e "CREATE USER $MYUSR@'%' IDENTIFIED BY '$MYUPW';"
+#
+#	fi
+#
+#	# privilegi
+#	mysql -h $MYSRV -u root -p"$MYPSW" -e "GRANT ALL PRIVILEGES ON $MYDBN.* TO $MYUSR@'%';"
+#	mysql -h $MYSRV -u root -p"$MYPSW" -e "FLUSH PRIVILEGES;"
+#
+#    fi
 
     # certificato HTTPS
     whiptail	--title "creazione certificato HTTPS" \

@@ -64,7 +64,7 @@ if [[ -n $1 ]]; then
 #        fi
 
 #        # richiesta
-#        echo -n "vuoi installare il database del sito (s/n)? "
+#        echo -n "vuoi creare il database del sito (s/n)? "
 #        read YN
 
 #        # configurazione

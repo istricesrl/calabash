@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # log
-logger "$0 $1"
+logger "$0 $1 $2"
 
 # controllo i parametri
 if [[ -n $1 ]]; then
@@ -22,12 +22,17 @@ if [[ -n $1 ]]; then
     cd $1/
 
     # chiedo la branch
-    echo -n "quale branch vuoi usare per il setup (vuoto per master)? "
-    read BRANCH
+    if [ -z "$2" ]; then
 
-    # configurazione
-    if [ -n "$BRANCH" ]; then
-        sudo git checkout $BRANCH
+        # chiedo
+        echo -n "quale branch vuoi usare per il setup (vuoto per master)? "
+        read BRANCH
+
+        # configurazione
+        if [ -n "$BRANCH" ]; then
+            sudo git checkout $BRANCH
+        fi
+
     fi
 
 #    # richiesta
@@ -69,7 +74,7 @@ if [[ -n $1 ]]; then
 else
 
     # help
-    echo "$0 <cartella>"
+    echo "$0 <cartella> <branch>"
 
 fi
 

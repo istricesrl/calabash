@@ -59,7 +59,7 @@ if [[ -n $1 ]]; then
 
     # configurazione
     if [ "$YN" = "s" ]; then
-        $1/_src/_sh/_gw.config.sh base
+        $1/_src/_sh/_gw.config.sh sviluppo
     fi
 
     # richiesta

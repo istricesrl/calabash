@@ -9,6 +9,8 @@ just clone or download the repository and merge the `usr` folder from the reposi
 
 ### installation from github
 
+You can manually launch these commands to install the Calabash script collection:
+
     apt-get update && apt-get upgrade
     apt-get install wget unzip
     wget https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
@@ -16,6 +18,13 @@ just clone or download the repository and merge the `usr` folder from the reposi
     cp -R ./calabash-master/* /
     rm -rf ./master.zip
     rm -rf ./calabash-master
+
+Or if you want you can just download the va.script.upgrade.sh scritp and let it do all the work for you:
+
+    wget https://github.com/istricesrl/calabash/blob/master/usr/sbin/va.script.upgrade.sh && ./va.script.upgrade.sh
+
+after doing this, you probably want to remove the spare va.script.upgrade.sh from your home directory, since a copy of
+the script will be downloaded in /usr/sbin when you complete the install.
 
 ## config files
 calabash uses a few config file to keep important informations at hand, these are usually located in /etc and

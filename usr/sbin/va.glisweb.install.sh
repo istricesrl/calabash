@@ -45,12 +45,6 @@ if [[ -n $1 ]]; then
         cp $1/_usr/_deploy/_git/.gitignore $1/.gitignore
     fi
 
-    # aggiorno composer
-    cd $1/ && composer update
-
-    # permessi
-    $1/_src/_sh/_lamp.permissions.reset.sh
-
     # se l'installazione è interattiva
     if [ -z "$3" ]; then
 
@@ -83,6 +77,12 @@ if [[ -n $1 ]]; then
         fi
 
     fi
+
+    # aggiorno composer
+    cd $1/ && composer update
+
+    # permessi
+    $1/_src/_sh/_lamp.permissions.reset.sh
 
 else
 

@@ -146,8 +146,9 @@ if [[ "$?" -eq 0 ]]; then
 	mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --defaults-file=/etc/mysql.conf -u root --force mysql
 
 	# consento l'accesso remoto per root
-	mysql --defaults-extra-file=/etc/mysql.conf -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MY_ROOT_PW');"
 	mysql --defaults-extra-file=/etc/mysql.conf -u root -e "UPDATE mysql.user SET plugin = '' WHERE User = 'root';"
+	mysql --defaults-extra-file=/etc/mysql.conf -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MY_ROOT_PW');"
+	mysql --defaults-extra-file=/etc/mysql.conf -u root -e "FLUSH PRIVILEGES;"
 
 	# NOTA
 	# questo passaggio dell'attivazione dell'utente root è ancora da testare, comunque i comandi da dare sono questi due qui

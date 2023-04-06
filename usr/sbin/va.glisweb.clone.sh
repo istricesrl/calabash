@@ -62,6 +62,12 @@ if [[ -n $1 ]]; then
         $1/_src/_sh/_gw.config.sh sviluppo
     fi
 
+    # aggiorno composer
+    cd $1/ && composer update
+
+    # permessi
+    $1/_src/_sh/_lamp.permissions.reset.sh
+
     # richiesta
     echo -n "utente a cui aggiungere www-data come gruppo di login (vuoto per saltare)? "
     read WWWUSER

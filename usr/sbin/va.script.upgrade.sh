@@ -3,6 +3,12 @@
 # log
 logger "$0"
 
+# aggiorno il sistema
+apt-get update && apt-get upgrade
+
+# pacchetti necessari
+apt-get install wget unzip
+
 # cartella d'archivio per gli script correnti
 BAKDIR="/root/script.$(va.txt.timestamp.compressed.sh)/"
 

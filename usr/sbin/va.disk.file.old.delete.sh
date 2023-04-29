@@ -7,10 +7,19 @@
 logger "$0 $1 $2"
 
 # controllo i parametri
-if [[ -n $1 ]] && [[ -n $2 ]]; then
+if [[ -n "$1" ]] && [[ -n "$2" ]]; then
 
-    # elimino i file vecchi
-    find $1 -mtime +$2 -delete
+    if [[ -d "$1" ]]; then
+
+        # elimino i file vecchi
+        find $1 -mtime +$2 -delete
+
+    else
+
+        # help
+        echo "cartella non trovata: $1"
+
+    fi
 
 else
 

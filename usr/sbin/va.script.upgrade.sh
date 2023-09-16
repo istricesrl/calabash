@@ -3,6 +3,13 @@
 # log
 logger "$0"
 
+# protezione
+if [ -f /usr/sbin/va.script.upload.sh ]; then
+
+echo "aggiornamento degli script non consentito sulla macchina di sviluppo"
+
+else
+
 # aggiorno il sistema
 apt-get update && apt-get upgrade
 
@@ -47,6 +54,8 @@ rm -rf ./calabash-master
 
 # journal
 va.log.journal.sh "aggiornamento degli script"
+
+fi
 
 # uscita
 exit $?

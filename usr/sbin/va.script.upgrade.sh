@@ -4,7 +4,8 @@
 logger "$0"
 
 # protezione
-if [ -f /usr/sbin/va.script.upload.sh ]; then
+#if [ -f /usr/sbin/va.script.upload.sh ]; then
+if [ -d /var/www/calabash.videoarts.eu/dev ]; then
 
 echo "aggiornamento degli script non consentito sulla macchina di sviluppo"
 

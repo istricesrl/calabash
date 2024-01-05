@@ -81,8 +81,12 @@ if [[ -n $1 ]]; then
     # aggiorno composer
     cd $1/ && composer update
 
+    # cartelle custom
+    mkdir $1/tmp
+    mkdir $1/var
+
     # permessi
-    $1/_src/_sh/_lamp.permissions.reset.sh
+    $1/_src/_sh/_lamp.permissions.secure.sh
 
 else
 

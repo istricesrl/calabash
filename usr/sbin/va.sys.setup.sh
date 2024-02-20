@@ -169,6 +169,9 @@ if [[ "$?" -eq 0 ]]; then
     # whiptail - interfaccia utente per gli script bash
     apt-get install -y whiptail
 
+    # whiptail - interfaccia utente per gli script bash
+    apt-get install -y taskwarrior
+
     # gestione dei video
     apt-get install -y ffmpeg mediainfo
 

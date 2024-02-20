@@ -27,3 +27,9 @@ va.monit.check.sh
 
 # spaziatore
 echo
+
+# cose da fare sulla macchina
+task status:pending list
+
+# spaziatore
+echo

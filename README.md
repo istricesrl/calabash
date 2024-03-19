@@ -88,3 +88,7 @@ usage:
 example:
 
     va.wget.pages.list.sh https://some.site.tld /tmp/urlsofsomesite.txt
+
+## Acknowledgments
+This project was made possible by the contributions of many people. Since it would be impossible to list them all and I would risk forgetting someone,
+I want to thank everyone who, with their work, made this project possible. Thank you all!!!

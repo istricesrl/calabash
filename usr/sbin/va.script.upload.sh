@@ -13,7 +13,7 @@ VERS=$(va.txt.timestamp.compressed.sh)
 ARCH="va.$VERS.tar"
 
 # nome della cartella per Github
-GITHUB=/script.github
+GITHUB=/script.github/calabash
 
 # cartella del sito
 DOCROOT=/var/www/calabash.videoarts.eu/dev
@@ -23,7 +23,7 @@ rm -f $FOLD/va.*.tar
 
 # creo l'archivio
 tar -cf $FOLD/$ARCH /usr/bin/va.* > /dev/null 2>&1
-tar -rf $FOLD/$ARCH /usr/sbin/va.* > /dev/null 2>&1
+tar --exclude="$0" -rf $FOLD/$ARCH /usr/sbin/va.* > /dev/null 2>&1
 tar -rf $FOLD/$ARCH /usr/share/doc/va.* > /dev/null 2>&1
 
 # carico l'archivio sul server remoto
@@ -75,3 +75,10 @@ git push
 
 # uscita
 exit $?
+
+## NOTA
+# git remote remove origin
+# git remote -v
+# git remote add origin git@github.com:istricesrl/calabash.git
+# git push --set-upstream origin master
+#

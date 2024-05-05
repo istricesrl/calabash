@@ -23,8 +23,7 @@ Or if you want you can just download the va.script.upgrade.sh scritp and let it 
 
     wget https://calabash.videoarts.eu/install.sh && chmod +x ./install.sh && ./install.sh
 
-after doing this, you probably want to remove the spare va.script.upgrade.sh from your home directory, since a copy of
-the script will be downloaded in /usr/sbin when you complete the install.
+after doing so, Calabash will be available on your system without needing to take any further steps.
 
 ## config files
 calabash uses a few config file to keep important informations at hand, these are usually located in /etc and

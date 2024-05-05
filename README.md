@@ -21,7 +21,7 @@ You can manually launch these commands to install the Calabash script collection
 
 Or if you want you can just download the va.script.upgrade.sh scritp and let it do all the work for you:
 
-    wget https://github.com/istricesrl/calabash/blob/master/usr/sbin/va.script.upgrade.sh && ./va.script.upgrade.sh
+    wget https://calabash.videoarts.eu/install.sh && chmod +x ./install.sh && ./install.sh
 
 after doing this, you probably want to remove the spare va.script.upgrade.sh from your home directory, since a copy of
 the script will be downloaded in /usr/sbin when you complete the install.

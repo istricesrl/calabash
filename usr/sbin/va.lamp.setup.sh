@@ -147,7 +147,7 @@ if [[ "$?" -eq 0 ]]; then
 
 	# consento l'accesso remoto per root
 	# mysql --defaults-extra-file=/etc/mysql.conf -u root -e "UPDATE mysql.user SET plugin = '' WHERE User = 'root';"
-	mysql --defaults-extra-file=/etc/mysql.conf -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MY_ROOT_PW');"
+	mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MY_ROOT_PW');"
 	mysql --defaults-extra-file=/etc/mysql.conf -u root -e "FLUSH PRIVILEGES;"
 
 	# NOTA

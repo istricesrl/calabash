@@ -44,6 +44,11 @@ if [[ "$?" -eq 0 ]]; then
     echo "nameserver 8.8.4.4" >> /etc/resolv.conf
     echo "35.195.12.4	calabash.videoarts.it" >> /etc/hosts
 
+    # SEZIONE AGGIORNAMENTI E PACCHETTI
+    apt-get install unattended-upgrades
+    cp /usr/share/doc/va.script/examples/etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/10periodic
+    cp /usr/share/doc/va.script/examples/etc/cron.daily/unattended-upgrades /etc/cron.daily/unattended-upgrades
+
     # SEZIONE SERVIZI
     # in questa sezione vengono installati i servizi erogati dalla macchina
 

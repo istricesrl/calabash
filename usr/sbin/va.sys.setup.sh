@@ -45,6 +45,7 @@ if [[ "$?" -eq 0 ]]; then
     echo "35.195.12.4	calabash.videoarts.it" >> /etc/hosts
 
     # SEZIONE AGGIORNAMENTI E PACCHETTI
+    apt-get install aptitude
     apt-get install unattended-upgrades
     cp /usr/share/doc/va.script/examples/etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/10periodic
     cp /usr/share/doc/va.script/examples/etc/cron.daily/unattended-upgrades /etc/cron.daily/unattended-upgrades

@@ -109,7 +109,7 @@ if [[ "$?" -eq 0 ]]; then
     echo "	ServerAdmin $MAIL_ADMIN" >> $FILECONF
     echo "	ServerName $URL_SITO" >> $FILECONF
     if [[ -n $ALIAS_SITO ]]; then
-	echo "	ServerAlias $ALIAS_SITO" >> $FILECONF
+        echo "	ServerAlias $ALIAS_SITO" >> $FILECONF
     fi
     echo >> $FILECONF
     echo "	DocumentRoot /var/www/$DOCUMENT_ROOT" >> $FILECONF
@@ -125,6 +125,10 @@ if [[ "$?" -eq 0 ]]; then
     echo "		Order allow,deny" >> $FILECONF
     echo "		allow from all" >> $FILECONF
     echo "	</Directory>" >> $FILECONF
+    if [[ $DROOT == "dev" ]]; then
+        echo >> $FILECONF
+        echo "	SetEnv STATUS DEV" >> $FILECONF
+    fi
     echo >> $FILECONF
     echo "	LogLevel warn" >> $FILECONF
     echo "	ErrorLog $LOG_FOLDER/error.log" >> $FILECONF

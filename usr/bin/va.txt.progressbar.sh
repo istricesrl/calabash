@@ -59,3 +59,11 @@ function progressbar {
     fi
 
 }
+
+function bar {
+
+    if [ -n $1 ]; then
+        printf -- '-%.0s' $(seq 1 $1)
+    fi
+
+}

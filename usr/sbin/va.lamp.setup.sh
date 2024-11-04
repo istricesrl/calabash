@@ -155,6 +155,9 @@ if [[ "$?" -eq 0 ]]; then
 	# (provati da linea di comando) va soltanto controllato che funzionino anche da script :-/
 	# poi sembra che dopo un po' il server MySQL si perda il settaggio... verificare anche questo x-P
 
+	# NOTA
+	# se perdete la password di root di MySQL questo funziona :) https://dev.mysql.com/doc/refman/8.0/en/resetting-permissions.html
+
 	# riavvio il servizio
 	service mysql restart
 

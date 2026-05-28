@@ -4,7 +4,7 @@
 # controlla lo stato del sistema
 
 # eseguo i controlli presenti
-for i in $(ls /usr/sbin/va.*.check.sh); do
+for i in $(ls /usr/local/sbin/va.*.check.sh); do
     $i
 done
 

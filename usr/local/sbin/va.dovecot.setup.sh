@@ -3,7 +3,7 @@
 # installazione servizi
 apt-get install dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql
 
-#va.mysql.db.import.sh /usr/share/doc/va.script/examples/etc/dovecot/dovecot.sql mailserver
+#va.mysql.db.import.sh /usr/local/share/doc/va.script/examples/etc/dovecot/dovecot.sql mailserver
 
 #echo -n "inserisci password per l'utente mailserver: "
 #read PASW
@@ -19,7 +19,7 @@ sudo chown -R vmail:dovecot /etc/dovecot
 sudo chmod -R o-rwx /etc/dovecot
 usermod -aG privkey_users vmail
 
-# TODO copiare TUTTA la configurazione da /usr/share/doc/va.script/examples/etc/dovecot
+# TODO copiare TUTTA la configurazione da /usr/local/share/doc/va.script/examples/etc/dovecot
 
 # REVISIONI
 # 2020-07-02 controllo funzionamento su Debian 10 (buster)

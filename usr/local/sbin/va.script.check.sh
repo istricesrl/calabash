@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # versione locale
-if [ -f "/etc/va.script.version" ]; then
-    LOCAL="$(cat /etc/va.script.version)"
+if [ -f "/usr/local/etc/va.script.version" ]; then
+    LOCAL="$(cat /usr/local/etc/va.script.version)"
 else
     LOCAL="0"
 fi

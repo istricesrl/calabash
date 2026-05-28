@@ -22,12 +22,12 @@ set eventqueue
 
 check device rootfs with path /
     if SPACE usage > 75% then alert
-    if SPACE usage > 75% for 10 cycles then exec "/usr/sbin/va.disk.space.clean.sh"
+    if SPACE usage > 75% for 10 cycles then exec "/usr/local/sbin/va.disk.space.clean.sh"
     if SPACE usage > 75% for 20 cycles then exec "/sbin/shutdown -r now"
 
 # versione con notifica su Slack
 # check device rootfs with path /
-#     if SPACE usage > 75% then exec "/usr/bin/va.slack.msg.sh 'spazio su disco residuo inferiore al 25%'"
+#     if SPACE usage > 75% then exec "/usr/local/bin/va.slack.msg.sh 'spazio su disco residuo inferiore al 25%'"
 
 
 # Includes

@@ -199,7 +199,7 @@ FILECONF=/etc/exim4/exim4.conf.template
 va.bak.sh $FILECONF
 
 # scrittura del file di configurazione
-cp /usr/share/doc/va.script/examples/etc/exim4/exim4.conf.template.full $FILECONF
+cp /usr/local/share/doc/va.script/examples/etc/exim4/exim4.conf.template.full $FILECONF
 
 # file di configurazione
 FILECONF=/etc/default/saslauthd

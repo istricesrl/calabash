@@ -4,7 +4,7 @@
 logger "$0"
 
 # protezione
-#if [ -f /usr/sbin/va.script.upload.sh ]; then
+#if [ -f /usr/local/sbin/va.script.upload.sh ]; then
 if [ -d /var/www/calabash.videoarts.eu/dev ]; then
 
 echo "aggiornamento degli script non consentito sulla macchina di sviluppo"
@@ -27,9 +27,9 @@ apt-get install -y wget
 mkdir -p $BAKDIR
 
 # elimino i vecchi script
-mv /usr/bin/va.* $BAKDIR
-mv /usr/sbin/va.* $BAKDIR
-mv /usr/share/doc/va.* $BAKDIR
+mv /usr/local/bin/va.* $BAKDIR
+mv /usr/local/sbin/va.* $BAKDIR
+mv /usr/local/share/doc/va.* $BAKDIR
 
 # cambio cartella
 cd /root
@@ -51,7 +51,7 @@ rm -rf ./master.zip
 rm -rf ./calabash-master
 
 # annoto la versione corrente
-# echo $(va.curl.get.value.sh http://calabash.videoarts.it/va.current.version) > /etc/va.script.version
+# echo $(va.curl.get.value.sh http://calabash.videoarts.it/va.current.version) > /usr/local/etc/va.script.version
 
 # journal
 va.log.journal.sh "aggiornamento degli script"

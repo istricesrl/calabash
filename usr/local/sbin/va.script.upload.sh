@@ -22,9 +22,9 @@ DOCROOT=/var/www/calabash.videoarts.eu/dev
 rm -f $FOLD/va.*.tar
 
 # creo l'archivio
-tar -cf $FOLD/$ARCH /usr/bin/va.* > /dev/null 2>&1
-tar --exclude="$0" -rf $FOLD/$ARCH /usr/sbin/va.* > /dev/null 2>&1
-tar -rf $FOLD/$ARCH /usr/share/doc/va.* > /dev/null 2>&1
+tar -cf $FOLD/$ARCH /usr/local/bin/va.* > /dev/null 2>&1
+tar --exclude="$0" -rf $FOLD/$ARCH /usr/local/sbin/va.* > /dev/null 2>&1
+tar -rf $FOLD/$ARCH /usr/local/share/doc/va.* > /dev/null 2>&1
 
 # carico l'archivio sul server remoto
 # scp $FOLD/$ARCH root@calabash.videoarts.it:/var/www/calabash.videoarts.it/
@@ -43,12 +43,12 @@ rm -f $DOCROOT/va.current.tar
 ln -s $DOCROOT/$ARCH $DOCROOT/va.current.tar
 
 # copio gli script nella cartella per Github
-cp -r --parents /usr/bin/va.* $FOLD$GITHUB
-cp -r --parents /usr/sbin/va.* $FOLD$GITHUB
-cp -r --parents /usr/share/doc/va.* $FOLD$GITHUB
+cp -r --parents /usr/local/bin/va.* $FOLD$GITHUB
+cp -r --parents /usr/local/sbin/va.* $FOLD$GITHUB
+cp -r --parents /usr/local/share/doc/va.* $FOLD$GITHUB
 
 # aggiorno il numero di versione sul repository
-echo $VERS > $FOLD$GITHUB/etc/va.script.version
+echo $VERS > $FOLD$GITHUB/usr/local/etc/va.script.version
 
 # cambio cartella
 cd $FOLD$GITHUB

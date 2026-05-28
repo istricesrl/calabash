@@ -22,7 +22,7 @@ if [[ "$?" -eq 0 ]]; then
     apt-get install -y apache2
 
     # risoluzione errore AH00558
-    cp /usr/share/doc/va.script/examples/etc/apache2/conf-enabled/servername.conf /etc/apache2/conf-enabled/servername.conf
+    cp /usr/local/share/doc/va.script/examples/etc/apache2/conf-enabled/servername.conf /etc/apache2/conf-enabled/servername.conf
 
     # installazione di apachetop
     apt-get install -y apachetop
@@ -88,7 +88,7 @@ if [[ "$?" -eq 0 ]]; then
     # apt-get install -y python3-certbot-dns-rfc2136
 
     # aggiornamento automatico certificati
-    cp /usr/share/doc/va.script/examples/etc/cron.monthly/certbot /etc/cron.monthly/certbot
+    cp /usr/local/share/doc/va.script/examples/etc/cron.monthly/certbot /etc/cron.monthly/certbot
 
     # MySQL
     whiptail	--title "MySQL" \

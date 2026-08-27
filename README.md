@@ -46,19 +46,36 @@ he does not want to go on (for example `va.lamp.setup.sh`)
 these scripts are intended to simplify copy, archive and backup operations
 
 #### va.bak.sh
-this script simply creates a copy of a file by adding a timestamp (created via `va.txt.timestamp.compressed.sh`)
-to the name to create a backup copy of it
+this script creates a backup copy of a file or a directory
 
 usage:
 
-    va.bak.sh FILE [PATH]
+    va.bak.sh FILE|DIRECTORY [PATH] [REASON]
 
 example:
 
-    va.bak.sh file.txt
+    va.bak.sh /etc/mysql/my.cnf /var/backups/ pre-tuning
 
-will create a file named `file.txt.20200703112437` if launched on 2020/07/03 11:24:37; optionally, a second parameter can be
-specifified to save the copy in a custom path, otherwise, the copy will be created in the same folder of the original
+will create `/var/backups/20200703112437-pre-tuning/etc/mysql/my.cnf` if launched on 2020/07/03 11:24:37, preserving
+permissions, ownership and timestamps, and will print the destination path on stdout so that the caller can capture it
+
+the timestamp (created via `va.txt.timestamp.compressed.sh`) names the **containing directory**, while the copy keeps the
+original file name and, most importantly, its real extension; the second parameter is the base destination and defaults
+to `/var/backups`, the third one is an optional reason appended to the timestamp
+
+**why the copy is not left next to the original with the timestamp appended to its name**, as this script used to do: a
+great many mechanisms on a Linux box decide what to do with a file by looking at its **final** extension, and a trailing
+timestamp hides it. Real cases found on one of our servers: a copy of a maintenance script in `/etc/cron.daily/` was not
+executed by run-parts only because its name contained dots; a copy of a script in `/etc/profile.d/` was not sourced by
+every shell only because the glob is `*.sh`; a copy of a ModSecurity rules file was not loaded only because the include
+is `rules/*.conf`, and duplicate rule IDs would have stopped Apache from starting; and inside an Apache document root the
+`FilesMatch` denying `.bak .conf .key .pem .sql` is anchored at the end of the name, so `page.php.bak.20200703112437`
+does not match it and gets served in clear text, which means public source code
+
+use `va.disk.file.backup.check.sh` to find copies that do not follow this convention
+
+for the historical behaviour (copy next to the original, timestamp appended to the name) export `VA_BAK_LEGACY=1` before
+calling; it is a transitional compatibility switch, do not use it in new scripts
 
 #### va.bak.tar.sh
 this script creates a compressed archive from a file or a directory
@@ -73,6 +90,26 @@ example:
 
 this creates a tar archive compressed with gzip in `/var/backups/etc.20200703112437.tar.gz` if launched on 2020/07/03 11:24:37,
 without any output on stdout (quiet mode)
+
+### disk script
+these scripts are intended to inspect and tidy up what is stored on disk
+
+#### va.disk.file.backup.check.sh
+this script lists the files that look like backup copies left around in the given paths, that is copies whose name hides
+the real extension behind a suffix (`sshd_config.20200703112437`, `my.cnf.bak`, `site.conf.old.2`); see `va.bak.sh`
+above for why those are a problem and not just untidy
+
+usage:
+
+    va.disk.file.backup.check.sh /PATH [/PATH ...]
+
+it exits 1 when it finds something and 0 when it does not, so it can be used from monit or from a cron script:
+
+    #!/bin/bash
+    va.disk.file.backup.check.sh /etc
+
+backups created by system tools (`*.dpkg-old`, `*.ucf-dist`, `passwd-`, `shadow-`, ...) and files shipped by packages
+with a legitimate tail (`*.conf.example`, `*.yaml.skeleton`, `exim4.conf.template`, `my.cnf.fallback`) are not reported
 
 ### wget script
 these are script designed to make it easier to use wget in common tasks

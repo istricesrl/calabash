@@ -125,6 +125,31 @@ example:
 
     va.wget.pages.list.sh https://some.site.tld /tmp/urlsofsomesite.txt
 
+### takeout script
+these scripts save a whole machine before switching it off, either to move it elsewhere or just to archive it; they run
+on the machine that receives the takeout and reach the old one through ssh with a key, so nothing is written on the
+old machine but `/root/takeout/`
+
+#### va.takeout.inventory.sh
+this script takes the census of the machine: services, sites, databases, cron, DNS names, executables not coming from
+any package, cloud provider; it writes the package list, the firewall rules and a system sheet into `/root/takeout/` on
+the remote machine, and the inventory plus the list of expected archives into `/var/backups/NAME/YYYYMMDD-takeout/`
+
+    va.takeout.inventory.sh 203.0.113.10 oldweb
+
+#### va.takeout.pull.sh
+this script streams through ssh one archive per item of the inventory (`etc.tar.gz`, `root.tar.gz`, `home.USER.tar.gz`,
+`var.www.SITE.tar.gz`, `var.lib.mysql.DB.sql.gz`, `var.lib.mysql.users.USER.sql.gz`, ...) and resumes where it stopped
+if launched again; extra paths can be added as arguments
+
+    va.takeout.pull.sh 203.0.113.10 /var/backups/oldweb/20261022-takeout /var/backups/oldsite
+
+#### va.takeout.verify.sh
+this script checks that every expected archive is there, can be read through and is complete, and that `SHA256SUMS`
+matches; it exits with 1 if anything is wrong
+
+    va.takeout.verify.sh /var/backups/oldweb/20261022-takeout
+
 ## Acknowledgments
 This project was made possible by the contributions of many people. Since it would be impossible to list them all and I would risk forgetting someone,
 I want to thank everyone who, with their work, made this project possible. Thank you all!!!

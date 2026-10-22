@@ -137,6 +137,15 @@ the remote machine, and the inventory plus the list of expected archives into `/
 
     va.takeout.inventory.sh 203.0.113.10 oldweb
 
+#### va.takeout.site.inventory.sh
+this script takes the census of a single site, either a CloudPanel site (`/home/USER/`, found by user or domain) or a
+classic one (`/var/www/SITE/`): site files, vhosts, PHP-FPM pool, certificates, logrotate, crontab, databases and their
+MySQL users; it writes the site sheet into `/root/takeout/sito.SITE/` on the remote machine and the inventory plus the
+list of expected archives into `/var/backups/SITE/YYYYMMDD-takeout/`, then pull and verify work as for a whole machine;
+CloudPanel backup copies (`/home/USER/backups`) are left out and can be added to pull as an extra path
+
+    va.takeout.site.inventory.sh 203.0.113.10 www.example.com
+
 #### va.takeout.pull.sh
 this script streams through ssh one archive per item of the inventory (`etc.tar.gz`, `root.tar.gz`, `home.USER.tar.gz`,
 `var.www.SITE.tar.gz`, `var.lib.mysql.DB.sql.gz`, `var.lib.mysql.users.USER.sql.gz`, ...) and resumes where it stopped

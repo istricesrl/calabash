@@ -2,9 +2,9 @@
 
 # UTILIZZO
 # questo script fa il censimento di un singolo sito di cui si vuole fare il takeout, sia su CloudPanel
-# ( /home/UTENTE/ ) sia su un server classico ( /var/www/SITO/ ): sulla macchina remota prepara in
-# /root/takeout/sito.SITO/ la scheda del sito ( righe di CloudPanel senza password e chiavi, utente di
-# sistema ), e in locale scrive nella cartella del takeout l'inventario ( inventario.md ) e l'elenco dei
+# ( /home/UTENTE/ ) sia su un server classico ( /var/www/SITO/ ): sulla macchina remota non scrive
+# niente, e in locale scrive nella cartella del takeout la scheda del sito ( scheda.txt: righe di
+# CloudPanel senza password e chiavi, utente di sistema ), l'inventario ( inventario.md ) e l'elenco dei
 # file attesi ( atteso.txt ) che leggono va.takeout.pull.sh e va.takeout.verify.sh, gli stessi del
 # takeout di una macchina intera
 
@@ -34,7 +34,6 @@ if [ -n "$2" ] && [[ "$2" =~ ^[A-Za-z0-9._-]+$ ]]; then
     OUT=$($SSH "$HOST" "bash -s -- '$SITO'" <<'REMOTO'
 export LC_ALL=C
 S="$1"
-T=/root/takeout/sito.$S
 CLP=/home/clp/htdocs/app/data/db.sq3
 dim() { du -sb "$@" 2>/dev/null | awk '{s+=$1} END{printf "%d\n", s}'; }
 umano() { numfmt --to=iec "${1:-0}" 2>/dev/null || echo "$1"; }
@@ -59,14 +58,13 @@ if [ -z "$R" ] || [ ! -d "$R" ]; then
     exit 0
 fi
 [ -z "$U" ] && U=$(stat -c %U "$R")
-mkdir -p "$T" && chmod 700 "$T"
 
 echo "## Sito"
 echo
 echo "- radice: \`$R\` ( $(umano "$(dim "$R")") ), utente \`$U\`"
 [ -n "$ID" ] && echo "- CloudPanel: sito $ID, $(q "select domain_name || ', tipo ' || type || coalesce(', ' || application, '') || ', varnish ' || varnish_cache from site where id=$ID")"
 
-# scheda del sito: le righe di CloudPanel senza le colonne con password e chiavi
+# scheda del sito: le righe di CloudPanel senza le colonne con password e chiavi, scritta in locale
 {
     echo "# utente"
     getent passwd "$U"; id "$U"
@@ -92,8 +90,7 @@ echo "- radice: \`$R\` ( $(umano "$(dim "$R")") ), utente \`$U\`"
         echo; echo "# basic_auth"
         qh "select b.id, b.is_active, b.user_name, b.whitelisted_ips from basic_auth b join site s on s.basic_auth_id=b.id where s.id=$ID"
     fi
-} > "$T/scheda.txt" 2>&1
-chmod 600 "$T/scheda.txt"
+} 2>&1 | sed 's/^/@SCHEDA /'
 
 # i file del sito: le copie di backup di CloudPanel restano fuori, si aggiungono come extra se servono
 N=$(echo "${R#/}" | tr / .)
@@ -124,7 +121,6 @@ C=$( {
         ls -d /etc/nginx/ssl-certificates/$d.crt /etc/nginx/ssl-certificates/$d.key \
               /etc/letsencrypt/live/$d /etc/letsencrypt/archive/$d /etc/letsencrypt/renewal/$d.conf 2>/dev/null
     done
-    echo "$T"
 } | sort -u)
 att tarlist "sito.$S.config.tar.gz" "sito.$S.config.list" "$(echo "$C" | xargs -r -d '\n' du -cb 2>/dev/null | tail -1 | cut -f1)"
 echo "$C" | lista "sito.$S.config.list"
@@ -136,7 +132,8 @@ echo "$C" | sed 's/^/- `/; s/$/`/'
 [ -n "$ID" ] && [ "$(q "select count(*) from cron_job where site_id=$ID")" != 0 ] && echo "- cron di CloudPanel: $(q "select count(*) from cron_job where site_id=$ID") ( in scheda.txt )"
 
 # database: da CloudPanel, oppure dai file di configurazione dell'applicazione
-DBS=; DBU=
+DBS=; DBU=; REMOTI=
+locale() { case "$1" in ''|localhost|localhost:*|127.0.0.1|127.0.0.1:*|::1) return 0 ;; esac; return 1; }
 if [ -n "$ID" ]; then
     DBS=$(q "select name from database where site_id=$ID")
     DBU=$(q "select u.user_name from database_user u join database d on d.id=u.database_id where d.site_id=$ID")
@@ -144,17 +141,48 @@ fi
 CF=$(find "$R" -maxdepth 5 \( -name wp-config.php -o -name .env \) -not -path '*/backups/*' -not -path '*/node_modules/*' -not -path '*/vendor/*' 2>/dev/null)
 for f in $CF; do
     k() { sed -n -E "s/.*define *\( *['\"]$1['\"] *, *['\"]([^'\"]*)['\"].*/\1/p; s/^$2=[\"']?([^\"' ]*).*/\1/p" "$f"; }
-    DBS="$DBS"$'\n'"$(k DB_NAME DB_DATABASE)"
-    DBU="$DBU"$'\n'"$(k DB_USER DB_USERNAME)"
     h=$(k DB_HOST DB_HOST | head -1)
-    case "$h" in ''|localhost|localhost:*|127.0.0.1|127.0.0.1:*|::1) ;; *) avviso "$f usa un database su $h: non è su questa macchina" ;; esac
+    if locale "$h"; then
+        DBS="$DBS"$'\n'"$(k DB_NAME DB_DATABASE)"
+        DBU="$DBU"$'\n'"$(k DB_USER DB_USERNAME)"
+    else
+        REMOTI="$REMOTI"$'\n'"$(k DB_NAME DB_DATABASE)|$h|$(k DB_USER DB_USERNAME)|$f"
+    fi
 done
-DBS=$(echo "$DBS" | grep . | sort -u); DBU=$(echo "$DBU" | grep . | sort -u)
+# i deploy glisweb ( dev/, test/, stable/ ): i server MySQL stanno in src/config.json, sotto mysql.servers
+for f in $(find "$R" -maxdepth 4 -path '*/src/config.json' -not -path '*/backups/*' 2>/dev/null); do
+    if command -v python3 >/dev/null; then
+        L=$(python3 -c '
+import json, sys
+for s in json.load(open(sys.argv[1])).get("mysql", {}).get("servers", {}).values():
+    if isinstance(s, dict) and s.get("db"):
+        print("%s|%s|%s" % (s["db"], s.get("address", ""), s.get("username", "")))
+' "$f" 2>/dev/null)
+    elif command -v jq >/dev/null; then
+        L=$(jq -r '.mysql.servers // {} | .[] | select(.db) | "\(.db)|\(.address // "")|\(.username // "")"' "$f" 2>/dev/null)
+    else
+        avviso "$f: né python3 né jq per leggerlo, i database del deploy vanno cercati a mano"; continue
+    fi
+    while IFS='|' read -r db h u; do
+        [ -z "$db" ] && continue
+        if locale "$h"; then DBS="$DBS"$'\n'"$db"; DBU="$DBU"$'\n'"$u"
+        else REMOTI="$REMOTI"$'\n'"$db|$h|$u|$f"
+        fi
+    done <<< "$L"
+done
+DBS=$(echo "$DBS" | grep . | sort -u); DBU=$(echo "$DBU" | grep . | sort -u); REMOTI=$(echo "$REMOTI" | grep . | sort -u)
 echo
 echo "## Database"
 echo
-if [ -z "$DBS" ]; then
-    echo "- nessun database trovato ( né in CloudPanel né in wp-config.php o .env )"
+# un database su un'altra macchina non lo salva va.takeout.pull.sh: si dice dove sta e lo si salva da lì
+for h in $(echo "$REMOTI" | cut -d'|' -f2 | grep . | sort -u); do
+    avviso "database su $h, non su questa macchina: $(echo "$REMOTI" | awk -F'|' -v h="$h" '$2==h{print $1}' | sort -u | tr '\n' ' ')- vanno salvati a mano da lì"
+done
+echo "$REMOTI" | grep . | while IFS='|' read -r db h u f; do echo "- database \`$db\` su **$h** ( utente \`$u\`, da \`$f\` ): non è su questa macchina"; done
+if [ -z "$DBS" ] && [ -n "$REMOTI" ]; then
+    echo "@MYSQL -"
+elif [ -z "$DBS" ]; then
+    echo "- nessun database trovato ( né in CloudPanel né in wp-config.php, .env o src/config.json )"
     avviso "nessun database trovato per $S: se il sito ne usa uno, va aggiunto a mano"
     echo "@MYSQL -"
 elif command -v mysql >/dev/null && pgrep -x 'mysqld|mariadbd' >/dev/null; then
@@ -191,6 +219,12 @@ else
 fi
 
 for d in $DOM; do echo "@DNS $d"; done
+# gli indirizzi di questa macchina: quelli delle interfacce e, dietro una NAT ( GCP, AWS ), quello pubblico
+for i in $(hostname -I 2>/dev/null); do echo "@IP $i"; done
+P=$(curl -s -m 3 -H 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip 2>/dev/null)
+[[ "$P" =~ ^[0-9.]+$ ]] || P=$(curl -s -m 3 http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null)
+[[ "$P" =~ ^[0-9.]+$ ]] || P=$(curl -s -m 3 https://api.ipify.org 2>/dev/null)
+[[ "$P" =~ ^[0-9.]+$ ]] && echo "@IP $P"
 echo "@FINE"
 REMOTO
     ) || { echo "KO: il censimento remoto non è andato a buon fine" >&2; exit 4; }
@@ -202,6 +236,7 @@ REMOTO
     rm -f "$DIR"/*.list
     awk -v d="$DIR" '/^@LIST /{f=$2; sub(/^@LIST [^ ]+ /, ""); print > (d"/"f)}' <<< "$OUT"
     MY=$(sed -n 's/^@MYSQL //p' <<< "$OUT")
+    sed -n 's/^@SCHEDA //p' <<< "$OUT" > "$DIR/scheda.txt"
     {
         echo "host=$HOST"
         echo "nome=$SITO"
@@ -220,11 +255,12 @@ REMOTO
     fi
 
     # nomi DNS: puntano ancora a questa macchina?
-    IP=$(getent ahostsv4 "${HOST#*@}" | awk 'NR==1{print $1}')
+    # l'host com'è stato scritto ( anche 127.0.0.1 ) più gli indirizzi che la macchina dichiara di avere
+    IP=" $(getent ahostsv4 "${HOST#*@}" | awk 'NR==1{print $1}') $(sed -n 's/^@IP //p' <<< "$OUT" | tr '\n' ' ')"
     DNS=$(sed -n 's/^@DNS //p' <<< "$OUT" | while read -r n; do
         r=$(getent ahostsv4 "$n" | awk '{print $1}' | sort -u | tr '\n' ' ')
         if [ -z "$r" ]; then echo "- \`$n\`: non risolve"
-        elif [[ " $r" == *" $IP "* ]]; then echo "- \`$n\`: **punta qui** ( $r)"
+        elif [ -n "$(for a in $r; do [[ "$IP" == *" $a "* ]] && echo s; done)" ]; then echo "- \`$n\`: **punta qui** ( $r)"
         else echo "- \`$n\`: punta altrove ( $r)"
         fi
     done)
@@ -282,6 +318,9 @@ exit 0
 
 # REVISIONI
 # 2026-10-22 prima versione, nata dal takeout di www.pcstop.eu su CloudPanel
+# 2026-11-05 la scheda si scrive nella cartella del takeout ( sulla macchina remota non si scrive più niente ),
+#            database dei deploy glisweb da src/config.json, database remoti segnalati e non dati per
+#            mancanti, nomi DNS confrontati anche con gli indirizzi dichiarati dalla macchina ( HOST 127.0.0.1 )
 
 # NOTA
 # parametri:
@@ -290,8 +329,8 @@ exit 0
 # $3 -> cartella del takeout opzionale, di default /var/backups/SITO/AAAAMMGG-takeout
 #
 # NOTA
-# lo script gira sulla macchina che riceve il takeout e lavora via ssh: sulla macchina del sito scrive
-# soltanto in /root/takeout/sito.SITO/; il resto della procedura è va.takeout.pull.sh e va.takeout.verify.sh,
+# lo script gira sulla macchina che riceve il takeout e lavora via ssh: sulla macchina del sito non
+# scrive niente; il resto della procedura è va.takeout.pull.sh e va.takeout.verify.sh,
 # e le copie di backup di CloudPanel ( /home/UTENTE/backups ) si salvano solo passandole a pull come extra
 #
 # NOTA
@@ -299,9 +338,10 @@ exit 0
 # inventario.md          -> il censimento da leggere prima di salvare
 # atteso.txt             -> una riga per archivio: tipo|file|sorgente|byte non compressi
 # meta.txt               -> host, sito, data, credenziali MySQL da usare
+# scheda.txt             -> utente di sistema e righe di CloudPanel del sito, senza password e chiavi
 # *.list                 -> i percorsi dei file del sito e della sua configurazione, letti da pull
 #
 # NOTA
 # negli archivi: i file del sito ( home.UTENTE.tar.gz o var.www.SITO.tar.gz ), la configurazione
-# ( sito.SITO.config.tar.gz: vhost, pool PHP-FPM, certificati, logrotate, crontab, scheda.txt ),
+# ( sito.SITO.config.tar.gz: vhost, pool PHP-FPM, certificati, logrotate, crontab ),
 # un dump per database e uno per utente MySQL con i suoi grant

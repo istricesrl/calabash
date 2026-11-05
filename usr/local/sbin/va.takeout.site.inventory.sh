@@ -43,6 +43,63 @@ avviso() { echo "@AVVISO $*"; }
 lista() { while read -r p; do [ -n "$p" ] && echo "@LIST $1 ${p#/}"; done; }
 q() { sqlite3 -separator '|' "$CLP" "$1"; }
 qh() { sqlite3 -header -separator '|' "$CLP" "$1"; }
+# credenziali di un database su un'altra macchina ( FILE DB HOST [CHIAVE] ), come opzioni [client] per mysql
+# e mysqldump: si leggono dalla configurazione del sito e non lasciano mai la sua macchina
+# ( la stessa funzione sta in va.takeout.site.inventory.sh e in va.takeout.pull.sh ); CHIAVE è il nome del
+# server in src/config.json, perché due server possono avere stesso indirizzo e database e password diverse
+cnf() {
+    local f="$1" db="$2" h="$3" n="$4" u= p= po= L s
+    case "$f" in
+        */src/config.json)
+            # i deploy glisweb: indirizzo e database in config.json, utente e password in shadow.json
+            if command -v python3 >/dev/null; then
+                L=$(python3 -c '
+import json, os, sys
+f, db, h, n = sys.argv[1:]
+c = json.load(open(f)).get("mysql", {}).get("servers", {})
+s = os.path.join(os.path.dirname(f), "shadow.json")
+o = json.load(open(s)).get("mysql", {}).get("servers", {}) if os.path.isfile(s) else {}
+for k, v in c.items():
+    if isinstance(v, dict) and v.get("db") == db and v.get("address", "") == h and n in ("", k):
+        v = dict(v, **o.get(k, {}))
+        print("\t".join(str(v.get(x, "")) for x in ("username", "password", "port")))
+        break
+' "$f" "$db" "$h" "$n" 2>/dev/null)
+            else
+                s="$(dirname "$f")/shadow.json"; [ -f "$s" ] || s=/dev/null
+                L=$(jq -r -s --arg db "$db" --arg h "$h" --arg n "$n" '(.[1].mysql.servers // {}) as $o | .[0].mysql.servers | to_entries[] | select(.value.db == $db and (.value.address // "") == $h and ($n == "" or .key == $n)) | .value + ($o[.key] // {}) | [.username // "", .password // "", .port // ""] | @tsv' "$f" "$s" 2>/dev/null | head -1)
+            fi
+            IFS=$'\t' read -r u p po <<< "$L"
+            ;;
+        *)
+            # wp-config.php e .env
+            kk() { sed -n -E "s/.*define *\( *['\"]$1['\"] *, *['\"]([^'\"]*)['\"].*/\1/p; s/^$2=[\"']?([^\"' ]*).*/\1/p" "$f" | head -1; }
+            u=$(kk DB_USER DB_USERNAME); p=$(kk DB_PASSWORD DB_PASSWORD); po=$(kk DB_PORT DB_PORT)
+            ;;
+    esac
+    [[ "$h" == *:* ]] && { po=${h##*:}; h=${h%%:*}; }
+    [ -n "$u" ] || return 1
+    p=${p//\\/\\\\}; p=${p//\"/\\\"}
+    printf '[client]\nhost=%s\nuser=%s\npassword="%s"\n' "$h" "$u" "$p"
+    [ -n "$po" ] && printf 'port=%s\n' "$po"
+    # mysqldump non conosce connect-timeout: va solo al client mysql, che prova il collegamento
+    printf '[mysql]\nconnect-timeout=10\n'
+    return 0
+}
+# eventi e routine vogliono privilegi ( EVENT, SHOW_ROUTINE ) che l'utente di un sito spesso non ha: si prova
+# prima, e quello che non si può leggere si salta; stampa le opzioni per mysqldump e quante routine sono illeggibili
+limiti() {
+    local O="$1" db="$2" E=--events L T=0 K=0
+    mysql --defaults-extra-file=<(echo "$O") -N -e "show events from \`$db\`" > /dev/null 2>&1 || E=--skip-events
+    L=$(mysql --defaults-extra-file=<(echo "$O") -N -B -e "show function status where Db='$db'; show procedure status where Db='$db'" 2>/dev/null \
+        | awk -F'\t' '{printf "show create %s `%s`.`%s`;\n", tolower($3), $1, $2}')
+    if [ -n "$L" ]; then
+        T=$(wc -l <<< "$L")
+        # senza privilegio il corpo torna NULL, o la riga non torna affatto
+        K=$(mysql --defaults-extra-file=<(echo "$O") --force -N -B <<< "$L" 2>/dev/null | awk -F'\t' '$3 != "NULL"' | wc -l)
+    fi
+    if [ "$K" -eq "$T" ]; then echo "$E --routines 0"; else echo "$E --skip-routines $(( T - K ))"; fi
+}
 
 # il sito: prima CloudPanel ( per utente o dominio ), poi /home e /var/www
 ID=; U=; R=
@@ -146,27 +203,32 @@ for f in $CF; do
         DBS="$DBS"$'\n'"$(k DB_NAME DB_DATABASE)"
         DBU="$DBU"$'\n'"$(k DB_USER DB_USERNAME)"
     else
-        REMOTI="$REMOTI"$'\n'"$(k DB_NAME DB_DATABASE)|$h|$(k DB_USER DB_USERNAME)|$f"
+        REMOTI="$REMOTI"$'\n'"$(k DB_NAME DB_DATABASE)|$h|$(k DB_USER DB_USERNAME)|$f|"
     fi
 done
 # i deploy glisweb ( dev/, test/, stable/ ): i server MySQL stanno in src/config.json, sotto mysql.servers
 for f in $(find "$R" -maxdepth 4 -path '*/src/config.json' -not -path '*/backups/*' 2>/dev/null); do
     if command -v python3 >/dev/null; then
+        # l'utente sta in shadow.json, accanto a config.json
         L=$(python3 -c '
-import json, sys
-for s in json.load(open(sys.argv[1])).get("mysql", {}).get("servers", {}).values():
-    if isinstance(s, dict) and s.get("db"):
-        print("%s|%s|%s" % (s["db"], s.get("address", ""), s.get("username", "")))
+import json, os, sys
+s = os.path.join(os.path.dirname(sys.argv[1]), "shadow.json")
+o = json.load(open(s)).get("mysql", {}).get("servers", {}) if os.path.isfile(s) else {}
+for k, v in json.load(open(sys.argv[1])).get("mysql", {}).get("servers", {}).items():
+    if isinstance(v, dict) and v.get("db"):
+        v = dict(v, **o.get(k, {}))
+        print("%s|%s|%s|%s" % (v["db"], v.get("address", ""), v.get("username", ""), k))
 ' "$f" 2>/dev/null)
     elif command -v jq >/dev/null; then
-        L=$(jq -r '.mysql.servers // {} | .[] | select(.db) | "\(.db)|\(.address // "")|\(.username // "")"' "$f" 2>/dev/null)
+        s="$(dirname "$f")/shadow.json"; [ -f "$s" ] || s=/dev/null
+        L=$(jq -r -s '(.[1].mysql.servers // {}) as $o | .[0].mysql.servers // {} | to_entries[] | select(.value.db) | .key as $k | .value + ($o[$k] // {}) | "\(.db)|\(.address // "")|\(.username // "")|\($k)"' "$f" "$s" 2>/dev/null)
     else
         avviso "$f: né python3 né jq per leggerlo, i database del deploy vanno cercati a mano"; continue
     fi
-    while IFS='|' read -r db h u; do
+    while IFS='|' read -r db h u n; do
         [ -z "$db" ] && continue
         if locale "$h"; then DBS="$DBS"$'\n'"$db"; DBU="$DBU"$'\n'"$u"
-        else REMOTI="$REMOTI"$'\n'"$db|$h|$u|$f"
+        else REMOTI="$REMOTI"$'\n'"$db|$h|$u|$f|$n"
         fi
     done <<< "$L"
 done
@@ -174,11 +236,34 @@ DBS=$(echo "$DBS" | grep . | sort -u); DBU=$(echo "$DBU" | grep . | sort -u); RE
 echo
 echo "## Database"
 echo
-# un database su un'altra macchina non lo salva va.takeout.pull.sh: si dice dove sta e lo si salva da lì
-for h in $(echo "$REMOTI" | cut -d'|' -f2 | grep . | sort -u); do
-    avviso "database su $h, non su questa macchina: $(echo "$REMOTI" | awk -F'|' -v h="$h" '$2==h{print $1}' | sort -u | tr '\n' ' ')- vanno salvati a mano da lì"
+# un database su un'altra macchina lo scarica va.takeout.pull.sh da qui, con le credenziali del sito:
+# si prova che risponda e se ne misura la dimensione; lo stesso database raggiunto con più nomi o più server
+# di config.json si salva una volta, e manca solo se non risponde con nessuno
+VISTI=; FALLITI=
+while IFS='|' read -r db h u f n; do
+    [ -z "$db" ] && continue
+    ip=$(getent ahostsv4 "${h%%:*}" | awk 'NR==1{print $1}')
+    case " $VISTI " in *" $db@${ip:-$h} "*) continue ;; esac
+    if command -v mysql >/dev/null && O=$(cnf "$f" "$db" "$h" "$n") \
+        && d=$(mysql --defaults-extra-file=<(echo "$O") -N -B -e "select coalesce(sum(data_length+index_length),0) from information_schema.tables where table_schema='$db'" "$db" 2>/dev/null) && [ -n "$d" ]; then
+        VISTI="$VISTI $db@${ip:-$h}"
+        att dbremoto "remoto.${h%%:*}.$db.sql.gz" "$f#$db#$h#$n" "$d"
+        read -r E R K <<< "$(limiti "$O" "$db")"
+        echo "- database \`$db\` su **$h** ( utente \`$u\`, da \`$f\`${n:+, server \`$n\`} ): $(umano "$d"), lo scarica pull da qui; utente e grant restano sul server del database"
+        [ "$E" = --skip-events ] && echo "  - gli eventi non si leggono con l'utente del sito: il dump non li ha"
+        if [ "$R" = --skip-routines ]; then
+            echo "  - **$K routine illeggibili** con l'utente del sito: il dump le salta"
+            avviso "il database $db su $h ha $K routine che l'utente del sito non può leggere: il dump le salta, vanno salvate dal server del database"
+        fi
+    else
+        FALLITI="$FALLITI"$'\n'"$db@${ip:-$h}|$db|$h|$u|$f"
+    fi
+done <<< "$REMOTI"
+echo "$FALLITI" | grep . | sort -u | while IFS='|' read -r k db h u f; do
+    case " $VISTI " in *" $k "*) continue ;; esac
+    echo "- database \`$db\` su **$h** ( utente \`$u\`, da \`$f\` ): **non risponde da qui**"
+    avviso "il database $db su $h non risponde con le credenziali di $f: se è ancora in uso va salvato a mano da lì"
 done
-echo "$REMOTI" | grep . | while IFS='|' read -r db h u f; do echo "- database \`$db\` su **$h** ( utente \`$u\`, da \`$f\` ): non è su questa macchina"; done
 if [ -z "$DBS" ] && [ -n "$REMOTI" ]; then
     echo "@MYSQL -"
 elif [ -z "$DBS" ]; then
@@ -321,6 +406,8 @@ exit 0
 # 2026-11-05 la scheda si scrive nella cartella del takeout ( sulla macchina remota non si scrive più niente ),
 #            database dei deploy glisweb da src/config.json, database remoti segnalati e non dati per
 #            mancanti, nomi DNS confrontati anche con gli indirizzi dichiarati dalla macchina ( HOST 127.0.0.1 )
+# 2026-11-05 i database remoti che rispondono con le credenziali del sito ( wp-config.php, .env, src/config.json
+#            più src/shadow.json ) diventano archivi dbremoto, scaricati da pull; utente glisweb da shadow.json
 
 # NOTA
 # parametri:
@@ -344,4 +431,5 @@ exit 0
 # NOTA
 # negli archivi: i file del sito ( home.UTENTE.tar.gz o var.www.SITO.tar.gz ), la configurazione
 # ( sito.SITO.config.tar.gz: vhost, pool PHP-FPM, certificati, logrotate, crontab ),
-# un dump per database e uno per utente MySQL con i suoi grant
+# un dump per database e uno per utente MySQL con i suoi grant; i database su un'altra macchina
+# ( remoto.HOST.DB.sql.gz ) li scarica la macchina del sito con le credenziali del sito, senza utenti né grant

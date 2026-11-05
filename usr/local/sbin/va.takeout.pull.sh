@@ -69,6 +69,75 @@ mysqldump $MY --single-transaction --routines --triggers --events --max_allowed_
 REMOTO
                 RC=$?
                 ;;
+            dbremoto)
+                # il database sta su un'altra macchina: lo scarica quella del sito, con le credenziali del sito
+                $SSH "$HOST" "bash -s -- '$SRC'" > "$PART" <<'REMOTO'
+set -o pipefail
+# credenziali di un database su un'altra macchina ( FILE DB HOST [CHIAVE] ), come opzioni [client] per mysql
+# e mysqldump: si leggono dalla configurazione del sito e non lasciano mai la sua macchina
+# ( la stessa funzione sta in va.takeout.site.inventory.sh e in va.takeout.pull.sh ); CHIAVE è il nome del
+# server in src/config.json, perché due server possono avere stesso indirizzo e database e password diverse
+cnf() {
+    local f="$1" db="$2" h="$3" n="$4" u= p= po= L s
+    case "$f" in
+        */src/config.json)
+            # i deploy glisweb: indirizzo e database in config.json, utente e password in shadow.json
+            if command -v python3 >/dev/null; then
+                L=$(python3 -c '
+import json, os, sys
+f, db, h, n = sys.argv[1:]
+c = json.load(open(f)).get("mysql", {}).get("servers", {})
+s = os.path.join(os.path.dirname(f), "shadow.json")
+o = json.load(open(s)).get("mysql", {}).get("servers", {}) if os.path.isfile(s) else {}
+for k, v in c.items():
+    if isinstance(v, dict) and v.get("db") == db and v.get("address", "") == h and n in ("", k):
+        v = dict(v, **o.get(k, {}))
+        print("\t".join(str(v.get(x, "")) for x in ("username", "password", "port")))
+        break
+' "$f" "$db" "$h" "$n" 2>/dev/null)
+            else
+                s="$(dirname "$f")/shadow.json"; [ -f "$s" ] || s=/dev/null
+                L=$(jq -r -s --arg db "$db" --arg h "$h" --arg n "$n" '(.[1].mysql.servers // {}) as $o | .[0].mysql.servers | to_entries[] | select(.value.db == $db and (.value.address // "") == $h and ($n == "" or .key == $n)) | .value + ($o[.key] // {}) | [.username // "", .password // "", .port // ""] | @tsv' "$f" "$s" 2>/dev/null | head -1)
+            fi
+            IFS=$'\t' read -r u p po <<< "$L"
+            ;;
+        *)
+            # wp-config.php e .env
+            kk() { sed -n -E "s/.*define *\( *['\"]$1['\"] *, *['\"]([^'\"]*)['\"].*/\1/p; s/^$2=[\"']?([^\"' ]*).*/\1/p" "$f" | head -1; }
+            u=$(kk DB_USER DB_USERNAME); p=$(kk DB_PASSWORD DB_PASSWORD); po=$(kk DB_PORT DB_PORT)
+            ;;
+    esac
+    [[ "$h" == *:* ]] && { po=${h##*:}; h=${h%%:*}; }
+    [ -n "$u" ] || return 1
+    p=${p//\\/\\\\}; p=${p//\"/\\\"}
+    printf '[client]\nhost=%s\nuser=%s\npassword="%s"\n' "$h" "$u" "$p"
+    [ -n "$po" ] && printf 'port=%s\n' "$po"
+    # mysqldump non conosce connect-timeout: va solo al client mysql, che prova il collegamento
+    printf '[mysql]\nconnect-timeout=10\n'
+    return 0
+}
+# eventi e routine vogliono privilegi ( EVENT, SHOW_ROUTINE ) che l'utente di un sito spesso non ha: si prova
+# prima, e quello che non si può leggere si salta; stampa le opzioni per mysqldump e quante routine sono illeggibili
+limiti() {
+    local O="$1" db="$2" E=--events L T=0 K=0
+    mysql --defaults-extra-file=<(echo "$O") -N -e "show events from \`$db\`" > /dev/null 2>&1 || E=--skip-events
+    L=$(mysql --defaults-extra-file=<(echo "$O") -N -B -e "show function status where Db='$db'; show procedure status where Db='$db'" 2>/dev/null \
+        | awk -F'\t' '{printf "show create %s `%s`.`%s`;\n", tolower($3), $1, $2}')
+    if [ -n "$L" ]; then
+        T=$(wc -l <<< "$L")
+        # senza privilegio il corpo torna NULL, o la riga non torna affatto
+        K=$(mysql --defaults-extra-file=<(echo "$O") --force -N -B <<< "$L" 2>/dev/null | awk -F'\t' '$3 != "NULL"' | wc -l)
+    fi
+    if [ "$K" -eq "$T" ]; then echo "$E --routines 0"; else echo "$E --skip-routines $(( T - K ))"; fi
+}
+IFS='#' read -r f db h n <<< "$1"
+O=$(cnf "$f" "$db" "$h" "$n") || { echo "credenziali di $db non trovate in $f" >&2; exit 7; }
+read -r E R K <<< "$(limiti "$O" "$db")"
+[ "$R" = --skip-routines ] && echo "AVVISO $db: $K routine illeggibili con l'utente del sito, saltate: vanno salvate dal server del database" >&2
+mysqldump --defaults-extra-file=<(echo "$O") --single-transaction --no-tablespaces $R --triggers $E --max_allowed_packet=512M --databases "$db" | gzip
+REMOTO
+                RC=$?
+                ;;
             users)
                 $SSH "$HOST" 'bash -s' > "$PART" <<REMOTO
 set -e -o pipefail
@@ -118,6 +187,7 @@ exit 0
 
 # REVISIONI
 # 2026-10-22 prima versione, nata dal takeout di 35.195.31.8 ( Debian 10 su Google Cloud )
+# 2026-11-05 tipo dbremoto: i database su un'altra macchina li scarica quella del sito, con le sue credenziali
 
 # NOTA
 # parametri:
@@ -127,7 +197,7 @@ exit 0
 #
 # NOTA
 # i nomi degli archivi sono il percorso con i punti al posto delle barre: etc.tar.gz, home.mario.tar.gz,
-# var.www.sito.tar.gz, var.lib.mysql.DB.sql.gz, var.lib.mysql.users.UTENTE.sql.gz
+# var.www.sito.tar.gz, var.lib.mysql.DB.sql.gz, var.lib.mysql.users.UTENTE.sql.gz, remoto.HOST.DB.sql.gz
 #
 # NOTA
 # un archivio già presente non si riscarica: rilanciato dopo un errore, lo script riprende da quello che

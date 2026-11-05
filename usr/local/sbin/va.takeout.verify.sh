@@ -48,7 +48,7 @@ if [ -n "$1" ]; then
                     tar -tzf "$F" > /dev/null 2>&1 || { ko "$FILE" "archivio illeggibile"; continue; }
                 fi
                 ;;
-            db)
+            db|dbremoto)
                 CODA=$(gzip -dc "$F" 2>/dev/null | tail -c 300; exit "${PIPESTATUS[0]}") || { ko "$FILE" "gzip illeggibile"; continue; }
                 grep -q -- '-- Dump completed' <<< "$CODA" || { ko "$FILE" "dump troncato, manca -- Dump completed"; continue; }
                 ;;
@@ -92,6 +92,7 @@ exit 0
 
 # REVISIONI
 # 2026-10-22 prima versione, nata dal takeout di 35.195.31.8 ( Debian 10 su Google Cloud )
+# 2026-11-05 i dump dbremoto si verificano come quelli locali
 
 # NOTA
 # parametri:

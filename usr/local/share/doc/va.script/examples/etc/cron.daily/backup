@@ -2,4 +2,4 @@
 
 logger "$0"
 
-va.mysql.db.export.all.sh /var/backups z quiet
+nice ionice -c3 va.mysql.db.export.all.sh /var/backups/mysql z quiet 7

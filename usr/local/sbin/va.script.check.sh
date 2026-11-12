@@ -7,8 +7,8 @@ else
     LOCAL="0"
 fi
 
-# versione remota
-REMOTE="$(va.curl.get.value.sh https://calabash.videoarts.eu/va.current.version)"
+# versione remota, quella del ramo master su GitHub
+REMOTE="$(va.curl.get.value.sh https://raw.githubusercontent.com/istricesrl/calabash/master/usr/local/etc/va.script.version)"
 
 # controllo
 if [ -z "$REMOTE" ]; then

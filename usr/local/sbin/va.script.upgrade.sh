@@ -3,9 +3,8 @@
 # log
 logger "$0"
 
-# protezione
-#if [ -f /usr/local/sbin/va.script.upload.sh ]; then
-if [ -d /var/www/calabash.videoarts.eu/dev ]; then
+# protezione: sulla macchina di sviluppo gli script si pubblicano con va.script.upload.sh
+if [ -d /root/script.github/calabash/.git ]; then
 
 echo "aggiornamento degli script non consentito sulla macchina di sviluppo"
 
@@ -34,24 +33,19 @@ mv /usr/local/share/doc/va.* $BAKDIR
 # cambio cartella
 cd /root
 
-# scarico l'ultima versione
-# wget http://calabash.videoarts.it/va.current.tar -O va.current.tar
+# scarico l'ultima versione da GitHub
 wget https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
 
 # scompatto gli script
-# tar -xf va.current.tar -C /
 unzip -qq ./master.zip
 
-# installo gli script
-cp -R ./calabash-master/* /
+# installo gli script: si copia solo usr/, README e LICENSE non vanno nella radice
+# la versione arriva con usr/local/etc/va.script.version
+cp -R ./calabash-master/usr/. /usr/
 
 # elimino il file scaricato
-# rm -f va.current.tar
 rm -rf ./master.zip
 rm -rf ./calabash-master
-
-# annoto la versione corrente
-# echo $(va.curl.get.value.sh http://calabash.videoarts.it/va.current.version) > /usr/local/etc/va.script.version
 
 # journal
 va.log.journal.sh "aggiornamento degli script"
@@ -62,6 +56,5 @@ fi
 exit $?
 
 # NOTA
-# -x estrae dall'archivio
-# -f specifica il file
-# -C specifica la cartella dove posizionare i file estratti (tenendo conto del path presente nell'archivio)
+# gli script si distribuiscono solo da GitHub ( istricesrl/calabash, ramo master ):
+# il vecchio sito calabash.videoarts.eu con gli archivi tar è stato dismesso il 12/11/2026

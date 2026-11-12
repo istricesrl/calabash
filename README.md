@@ -15,13 +15,13 @@ You can manually launch these commands to install the Calabash script collection
     apt-get install wget unzip
     wget https://github.com/istricesrl/calabash/archive/refs/heads/master.zip
     unzip -qq ./master.zip
-    cp -R ./calabash-master/* /
+    cp -R ./calabash-master/usr/. /usr/
     rm -rf ./master.zip
     rm -rf ./calabash-master
 
-Or if you want you can just download the va.script.upgrade.sh scritp and let it do all the work for you:
+Or if you want you can just download the install.sh script and let it do all the work for you:
 
-    wget https://calabash.videoarts.eu/install.sh && chmod +x ./install.sh && ./install.sh
+    wget https://raw.githubusercontent.com/istricesrl/calabash/master/install.sh && chmod +x ./install.sh && ./install.sh
 
 after doing so, Calabash will be available on your system without needing to take any further steps.
 

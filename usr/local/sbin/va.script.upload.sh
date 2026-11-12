@@ -3,44 +3,18 @@
 # log
 logger "$0"
 
-# percorso del file di archivio
+# cartella base
 FOLD=/root
 
 # creo la versione corrente
 VERS=$(va.txt.timestamp.compressed.sh)
 
-# nome del file di archivio
-ARCH="va.$VERS.tar"
-
 # nome della cartella per Github
 GITHUB=/script.github/calabash
 
-# cartella del sito
-DOCROOT=/var/www/calabash.videoarts.eu/dev
-
-# elimino gli eventuali archivi già esistenti
-rm -f $FOLD/va.*.tar
-
-# creo l'archivio
-tar -cf $FOLD/$ARCH /usr/local/bin/va.* > /dev/null 2>&1
-tar --exclude="$0" -rf $FOLD/$ARCH /usr/local/sbin/va.* > /dev/null 2>&1
-tar -rf $FOLD/$ARCH /usr/local/share/doc/va.* > /dev/null 2>&1
-
-# carico l'archivio sul server remoto
-# scp $FOLD/$ARCH root@calabash.videoarts.it:/var/www/calabash.videoarts.it/
-cp $FOLD/$ARCH $DOCROOT/
-
-# aggiorno il numero di versione sul server remoto
-# ssh root@calabash.videoarts.it "echo $VERS > $DOCROOT/va.current.version"
-echo $VERS > $DOCROOT/va.current.version
-
-# elimino il vecchio collegamento current.tar sul server remoto
-# ssh root@calabash.videoarts.it "rm -f $DOCROOT/va.current.tar"
-rm -f $DOCROOT/va.current.tar
-
-# creo il nuovo collegamento current.tar sul server remoto
-# ssh root@calabash.videoarts.it "ln -s $DOCROOT/$ARCH $DOCROOT/va.current.tar"
-ln -s $DOCROOT/$ARCH $DOCROOT/va.current.tar
+# NOTA
+# gli script si pubblicano solo su GitHub ( istricesrl/calabash ): il vecchio sito
+# calabash.videoarts.eu con gli archivi tar è stato dismesso il 12/11/2026
 
 # copio gli script nella cartella per Github
 cp -r --parents /usr/local/bin/va.* $FOLD$GITHUB
@@ -60,18 +34,6 @@ git pull
 git add .
 git commit -am "aggiornamento script del $(date)"
 git push
-
-# elimino l'archivio
-# rm -f $FOLD/$ARCH
-
-# NOTA
-# -c crea l'archivio
-# -r concatena all'archivio
-# -f specifica il file
-
-# NOTA
-# per installare gli script scompattare semplicemente l'archivio
-# nella cartella radice del server
 
 # uscita
 exit $?

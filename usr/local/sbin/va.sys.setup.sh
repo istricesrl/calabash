@@ -42,7 +42,6 @@ if [[ "$?" -eq 0 ]]; then
     # AGGIUNTA DNS
     echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     echo "nameserver 8.8.4.4" >> /etc/resolv.conf
-    echo "35.195.12.4	calabash.videoarts.it" >> /etc/hosts
 
     # SEZIONE AGGIORNAMENTI E PACCHETTI
     # apt-get install aptitude
@@ -207,7 +206,7 @@ exit $?
 
 # TO-DO
 # va settata la mail dell'amministratore, ma questo implica il setup della posta,
-# ad ogni modo bisogna che sistemistica@videoarts.eu riceva le notifiche
+# ad ogni modo bisogna che l'indirizzo dell'amministratore riceva le notifiche
 
 # REVISIONI
 # 2020-07-02 controllo funzionamento su Debian 10 (buster)

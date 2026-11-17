@@ -68,7 +68,9 @@ if [[ -n "$SORGENTE" ]]; then
     fi
 
     # identificativo della copia: timestamp, piu' il motivo se e' stato indicato
-    IDENTIFICATIVO=$( va.txt.timestamp.compressed.sh )
+    # 17/11/2026 web03: per percorso, non dal PATH ( nelle sessioni Claude /usr/local/bin puo' mancare e la cartella restava senza data )
+    IDENTIFICATIVO=$( "$( dirname "$( readlink -f "$0" )" )/va.txt.timestamp.compressed.sh" )
+    if [[ -z "$IDENTIFICATIVO" ]]; then echo "$0: timestamp vuoto, mi fermo" >&2; exit 1; fi
     if [[ -n "$MOTIVO" ]]; then
 	IDENTIFICATIVO="$IDENTIFICATIVO-$( echo "$MOTIVO" | tr ' /' '--' )"
     fi
